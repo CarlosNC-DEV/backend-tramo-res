@@ -2,6 +2,8 @@ import { Router } from "express";
 import multer from "multer";
 import { storage } from "../middleware/cloudinary.js";
 
+import { registroClienteEmpresa, verClienteEmpresaHabilitado, inhabilitarClienteEmpresa, verClienteEmpresaInhabilitado, habilitarClienteEmpresa } from '../controllers/cliente.empresa.controllers.js';
+
 const upload = multer({
   storage: storage,
 });
@@ -10,13 +12,13 @@ const router = Router();
 
 // registro cliente natural
 const input = upload.fields([{ name: "perfilImgPJU" }]);
-router.post("/registroClienteEmpresa", input, registroClienteNatural);
+router.post("/registroClienteEmpresa", input, registroClienteEmpresa);
 
 // ver clientes naturales habilitados
-router.get("/datosClientesEmpresaHB", verClienteNaturalHabilitado);
-router.put("/datosClientesEmpresaHB/:id", inhabilitarClienteNatural);
+router.get("/datosClientesEmpresaHB", verClienteEmpresaHabilitado);
+router.put("/datosClientesEmpresaHB/:id", inhabilitarClienteEmpresa);
 
-router.get("/datosClientesEmpresaIN", verClienteNaturalInhabilitado);
-router.put("/datosClientesEmpresaIN/:id", habilitarClienteNatural);
+router.get("/datosClientesEmpresaIN", verClienteEmpresaInhabilitado);
+router.put("/datosClientesEmpresaIN/:id", habilitarClienteEmpresa);
 
 export default router;

@@ -1,7 +1,7 @@
 import cloudinary from "cloudinary";
 import ClienteEmpresa from "../models/ClienteEmpresa.js";
 
-export const registroClienteNatural = async (req, res) => {
+export const registroClienteEmpresa = async (req, res) => {
   try {
     let idImgPJU;
     let urlImgPJU;
@@ -16,7 +16,7 @@ export const registroClienteNatural = async (req, res) => {
 
     const modelPersonaEmpresa = new ClienteEmpresa(req.body);
     modelPersonaEmpresa.perfil.idfotoPerfilPJU = idImgPJU;
-    modelPersonaEmpresa.perfil.idfotoPerfilPJU = urlImgPJU;
+    modelPersonaEmpresa.perfil.fotoPerfilPJU = urlImgPJU;
     modelPersonaEmpresa.contrasenaPJU = await modelPersonaEmpresa.encryptPassword(
       req.body.contrasena
     );
@@ -30,11 +30,11 @@ export const registroClienteNatural = async (req, res) => {
   }
 };
 
-export const verClienteNaturalHabilitado = async(req, res)=>{
+export const verClienteEmpresaHabilitado = async(req, res)=>{
     try {
-        const clienteNaturalHB = await ClienteNatural.find({ "estadoCLN.habilitadoPNA": true, "estadoCLN.motivoInhabilitadoPNA": null});
+        const clienteEmpresaHB = await ClienteEmpresa.find({ "estadoPJU.habilitadoPJU": true, "estadoPJU.motivoInhabilitadoPJU": null});
 
-        res.status(200).json(clienteNaturalHB);
+        res.status(200).json(clienteEmpresaHB);
 
     } catch (error) {
         console.log(error);
@@ -42,17 +42,17 @@ export const verClienteNaturalHabilitado = async(req, res)=>{
     }
 }
 
-export const inhabilitarClienteNatural = async(req, res)=>{
+export const inhabilitarClienteEmpresa = async(req, res)=>{
     try {
         const { id } = req.params;
-        const { motivoInhabilitadoPNA } = req.body;
-        if(!motivoInhabilitadoPNA){
+        const { motivoInhabilitadoPJU } = req.body;
+        if(!motivoInhabilitadoPJU){
             return res.status(400).json(' !Se requiere un motivo para inhabilitar al cliente! ');
         }
 
-        const inhabilitarClienteNT = await ClienteNatural.findByIdAndUpdate(id, { "estadoCLN.habilitadoPNA": false, "estadoCLN.motivoInhabilitadoPNA": motivoInhabilitadoPNA });
+        const inhabilitarClientePJU = await ClienteEmpresa.findByIdAndUpdate(id, { "estadoPJU.habilitadoPJU": false, "estadoPJU.motivoInhabilitadoPJU": motivoInhabilitadoPJU });
 
-        res.status(200).json(inhabilitarClienteNT);
+        res.status(200).json(inhabilitarClientePJU);
         
     } catch (error) {
         console.log(error);
@@ -61,11 +61,11 @@ export const inhabilitarClienteNatural = async(req, res)=>{
 }
 
 //Clientes inhabilitados
-export const verClienteNaturalInhabilitado = async(req, res)=>{
+export const verClienteEmpresaInhabilitado = async(req, res)=>{
     try {
-        const clienteNaturalIN = await ClienteNatural.find({ "estadoCLN.habilitadoPNA": false, "estadoCLN.motivoInhabilitadoPNA": { $ne: null }});
+        const clienteEmpresaIN = await ClienteEmpresa.find({ "estadoPJU.habilitadoPJU": false, "estadoPJU.motivoInhabilitadoPJU": { $ne: null }});
 
-        res.status(200).json(clienteNaturalIN);
+        res.status(200).json(clienteEmpresaIN);
 
     } catch (error) {
         console.log(error);
@@ -73,11 +73,10 @@ export const verClienteNaturalInhabilitado = async(req, res)=>{
     }
 }
 
-export const habilitarClienteNatural = async(req, res)=>{
+export const habilitarClienteEmpresa = async(req, res)=>{
     try {
         const { id } = req.params;
-
-        const inhabilitarClienteNT = await ClienteNatural.findByIdAndUpdate(id, { "estadoCLN.habilitadoPNA": true, "estadoCLN.motivoInhabilitadoPNA": null });
+        const inhabilitarClienteNT = await ClienteEmpresa.findByIdAndUpdate(id, { "estadoPJU.habilitadoPJU": true, "estadoPJU.motivoInhabilitadoPJU": null });
 
         res.status(200).json(inhabilitarClienteNT);
         

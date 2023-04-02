@@ -7,6 +7,7 @@ import solicitudes from './routes/solicitudes.routes.js';
 import estado from './routes/estado.conductores.routes.js';
 import conductores from './routes/datos.conductores.routes.js';
 import natural from './routes/cliente.natural.routes.js';
+import empresa from './routes/cliente.empresa.routes.js';
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use("/admin", solicitudes);
 app.use("/admin", estado);
 app.use("/admin", conductores);
 app.use("/admin", natural);
+app.use("/admin", empresa);
 
 export default app;

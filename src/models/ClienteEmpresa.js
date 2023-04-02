@@ -20,7 +20,7 @@ const personaEmpresaSchema = new Schema(
       fotoPerfilPJU: { type: String, require: true, default: null },
     },
 
-    estadoCLN: {
+    estadoPJU: {
       habilitadoPJU: { type: Boolean, default: true },
       motivoInhabilitadoPJU: { type: String, default: null },
     },
