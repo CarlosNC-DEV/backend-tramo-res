@@ -76,10 +76,9 @@ export const verClienteNaturalInhabilitado = async(req, res)=>{
 export const habilitarClienteNatural = async(req, res)=>{
     try {
         const { id } = req.params;
+        const habilitarClienteNT = await ClienteNatural.findByIdAndUpdate(id, { "estadoCLN.habilitadoPNA": true, "estadoCLN.motivoInhabilitadoPNA": null });
 
-        const inhabilitarClienteNT = await ClienteNatural.findByIdAndUpdate(id, { "estadoCLN.habilitadoPNA": true, "estadoCLN.motivoInhabilitadoPNA": null });
-
-        res.status(200).json(inhabilitarClienteNT);
+        res.status(200).json(habilitarClienteNT);
         
     } catch (error) {
         console.log(error);
