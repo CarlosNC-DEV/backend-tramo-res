@@ -16,9 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(admin);
-app.use(solicitudes);
-app.use(estado);
-app.use(conductores);
-app.use(natural);
+app.use("/admin", solicitudes);
+app.use("/admin", estado);
+app.use("/admin", conductores);
+app.use("/admin", natural);
 
 export default app;
