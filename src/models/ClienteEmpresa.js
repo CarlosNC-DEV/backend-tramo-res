@@ -3,21 +3,21 @@ import bcryptjs from "bcryptjs";
 
 const personaEmpresaSchema = new Schema(
   {
-    nombreEmpresa: { type: String, require: true },
-    razonSocialEmpresa: { type: String, require: true },
-    nomRepresentanteLegal: { type: String, require: true },
-    NITempresa: { type: String, require: true },
-    DireccionEmpresa: { type: String, require: true },
-    nroTelefonoPJU: { type: String, require: true },
-    correoElectronicoPJU: { type: String, require: true },
-    contrasenaPJU: { type: String, require: true },
+    nombreEmpresa: { type: String, required: true },
+    razonSocialEmpresa: { type: String, required: true },
+    nomRepresentanteLegal: { type: String, required: true },
+    NITempresa: { type: String, required: true },
+    DireccionEmpresa: { type: String, required: true },
+    nroTelefonoPJU: { type: String, required: true },
+    correoElectronicoPJU: { type: String, required: true },
+    contrasenaPJU: { type: String, required: true },
 
     calificacionPJU: { type: Number, default: 5 },
     numeroPedidosPJU: { type: Number, default: 0 },
 
     perfil: {
-      idfotoPerfilPJU: { type: String, require: true, default: null },
-      fotoPerfilPJU: { type: String, require: true, default: null },
+      idfotoPerfilPJU: { type: String, required: true, default: null },
+      fotoPerfilPJU: { type: String, required: true, default: null },
     },
 
     estadoPJU: {

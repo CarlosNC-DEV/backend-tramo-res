@@ -4,11 +4,11 @@ const ObjectId = Schema.ObjectId;
 
 const contactoEmergenciaSchema = new Schema(
   {
-    nombreCEM: { type: String, require: true },
-    apellidoCEM: { type: String, require: true },
-    NroDocumentoCEM: { type: String, require: true },
-    NroTelefonoCEM: { type: String, require: true },
-    CorreoElectricoCEM: { type: String, require: true },
+    nombreCEM: { type: String, required: true },
+    apellidoCEM: { type: String, required: true },
+    NroDocumentoCEM: { type: String, required: true },
+    NroTelefonoCEM: { type: String, required: true },
+    CorreoElectricoCEM: { type: String, required: true },
     idConductorCEM: { type: ObjectId, required: true },
   },
   {

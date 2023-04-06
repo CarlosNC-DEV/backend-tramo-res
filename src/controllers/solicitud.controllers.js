@@ -8,6 +8,9 @@ import TenedorVehiculo from "../models/TenedorVehiculo.js";
 
 export const solicitudCon = async (req, res) => {
   try {
+
+    const requestBody = JSON.parse(req.body.body);
+    
     //Conductor
     let idImgPerfilCon;
     let urlImgPerfilCon;
@@ -84,23 +87,23 @@ export const solicitudCon = async (req, res) => {
       urlImgVolcoT = fotoVolcoTrailer.secure_url;
     }
 
-    const conductorModel = new Conductores(req.body);
+    const conductorModel = new Conductores(requestBody);
     conductorModel.perfil.idfotoperfilCON = idImgPerfilCon;
     conductorModel.perfil.fotoperfilCON = urlImgPerfilCon;
     conductorModel.contrasenaCON = await conductorModel.encryptPassword(
-      req.body.contrasena
+      requestBody.contrasena
     );
     const conductorSave = await conductorModel.save();
 
-    const contactoEmergenciaModel = new ContactorEmergencia(req.body);
+    const contactoEmergenciaModel = new ContactorEmergencia(requestBody);
     contactoEmergenciaModel.idConductorCEM = conductorSave._id;
     await contactoEmergenciaModel.save();
 
-    const vehiculoModel = new Vehiculos(req.body);
+    const vehiculoModel = new Vehiculos(requestBody);
     vehiculoModel.idConductorVeh = conductorSave._id;
     const vehiculoSave = await vehiculoModel.save();
 
-    const imageVehiculosModel = new ImageVehiculos(req.body);
+    const imageVehiculosModel = new ImageVehiculos(requestBody);
     imageVehiculosModel.idFotoFrontal = idImgFronV;
     imageVehiculosModel.FotoFrontal = urlImgFronV;
     imageVehiculosModel.idFotoVolco = idImgVolcoV;
@@ -118,11 +121,11 @@ export const solicitudCon = async (req, res) => {
     imageVehiculosModel.idVehiculoFotos = vehiculoSave._id;
     await imageVehiculosModel.save();
 
-    const propietarioModel = new PropietarioVehiculos(req.body);
+    const propietarioModel = new PropietarioVehiculos(requestBody);
     propietarioModel.idVehiculoPRO = vehiculoSave._id;
     await propietarioModel.save();
 
-    const tenedorModel = new TenedorVehiculo(req.body);
+    const tenedorModel = new TenedorVehiculo(requestBody);
     tenedorModel.idVehiculoTE = vehiculoSave._id;
     await tenedorModel.save();
 
@@ -165,7 +168,7 @@ export const soliPendientes = async (req, res) => {
 export const rechazarSolicitud = async (req, res) => {
   try {
     const { id } = req.params;
-    const { motivoRechazoCON } = req.body;
+    const { motivoRechazoCON } = requestBody;
     if (!motivoRechazoCON) {
       return res.status(200).json(" !Se requiere un motivo de rechazo! ");
     }

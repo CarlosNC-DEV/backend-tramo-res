@@ -3,21 +3,21 @@ import bcryptjs from "bcryptjs";
 
 const personaNaturalSchema = new Schema(
   {
-    nombrePNA: { type: String, require: true },
-    apellidoPNA: { type: String, require: true },
-    tipoDocumentoPNA: { type: String, require: true },
-    nroDocumentoPNA: { type: String, require: true },
-    DireccionPNA: { type: String, require: true },
-    nroTelefonoPNA: { type: String, require: true },
-    correoElectronicoPNA: { type: String, require: true },
-    contrasenaPNA: { type: String, require: true },
+    nombrePNA: { type: String, required: true },
+    apellidoPNA: { type: String, required: true },
+    tipoDocumentoPNA: { type: String, required: true },
+    nroDocumentoPNA: { type: String, required: true },
+    DireccionPNA: { type: String, required: true },
+    nroTelefonoPNA: { type: String, required: true },
+    correoElectronicoPNA: { type: String, required: true },
+    contrasenaPNA: { type: String, required: true },
 
     calificacionPNA: { type: Number, default: 5 },
     numeroPedidosPNA: { type: Number, default: 0 },
 
     perfil: {
-      idfotoPerfilPNA: { type: String, require: true, default: null },
-      fotoPerfilPNA: { type: String, require: true, default: null },
+      idfotoPerfilPNA: { type: String, required: true, default: null },
+      fotoPerfilPNA: { type: String, required: true, default: null },
     },
 
     estadoCLN: {

@@ -5,14 +5,14 @@ const ObjectId = Schema.ObjectId;
 
 const datosPropietarioSchema = new Schema({
 
-    nombrePRO:{type:String,require:true},
-    apellidoPRO:{type:String,require:true},
-    NroDocumentoPRO:{type:String,require:true},
-    DireccionResidenciaPRO:{type:String,require:true},
-    ciudadPRO:{type:String,require:true},
-    NroTelefonoPRO:{type:String,require:true},
+    nombrePRO:{type:String,required:true},
+    apellidoPRO:{type:String,required:true},
+    NroDocumentoPRO:{type:String,required:true},
+    DireccionResidenciaPRO:{type:String,required:true},
+    ciudadPRO:{type:String,required:true},
+    NroTelefonoPRO:{type:String,required:true},
     
-    idVehiculoPRO:{type:ObjectId,require:true},
+    idVehiculoPRO:{type:ObjectId,required:true},
 },{
     timestamps: true,
     versionKey: false
