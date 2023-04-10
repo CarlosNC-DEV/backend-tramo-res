@@ -3,6 +3,9 @@ import ClienteNatural from "../models/ClienteNatural.js";
 
 export const registroClienteNatural = async (req, res) => {
   try {
+
+    const requestBody = JSON.parse(req.body.body);
+
     let idImgPNT;
     let urlImgPNT;
 
@@ -14,11 +17,11 @@ export const registroClienteNatural = async (req, res) => {
       urlImgPNT = imagePersonaNT.secure_url;
     }
 
-    const modelPersonaNatural = new ClienteNatural(req.body);
+    const modelPersonaNatural = new ClienteNatural(requestBody);
     modelPersonaNatural.perfil.idfotoPerfilPNA = idImgPNT;
     modelPersonaNatural.perfil.fotoPerfilPNA = urlImgPNT;
     modelPersonaNatural.contrasenaPNA = await modelPersonaNatural.encryptPassword(
-      req.body.contrasena
+        requestBody.contrasena
     );
 
     modelPersonaNatural.save();

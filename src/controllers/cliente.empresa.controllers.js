@@ -3,6 +3,9 @@ import ClienteEmpresa from "../models/ClienteEmpresa.js";
 
 export const registroClienteEmpresa = async (req, res) => {
   try {
+
+    const requestBody = JSON.parse(req.body.body);
+
     let idImgPJU;
     let urlImgPJU;
 
@@ -14,11 +17,11 @@ export const registroClienteEmpresa = async (req, res) => {
       urlImgPJU = imagePersonaPJU.secure_url;
     }
 
-    const modelPersonaEmpresa = new ClienteEmpresa(req.body);
+    const modelPersonaEmpresa = new ClienteEmpresa(requestBody);
     modelPersonaEmpresa.perfil.idfotoPerfilPJU = idImgPJU;
     modelPersonaEmpresa.perfil.fotoPerfilPJU = urlImgPJU;
     modelPersonaEmpresa.contrasenaPJU = await modelPersonaEmpresa.encryptPassword(
-      req.body.contrasena
+        requestBody.contrasena
     );
 
     modelPersonaEmpresa.save();
