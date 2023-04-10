@@ -38,6 +38,7 @@ export const authClienteNatural = async (req, res) => {
   }
 };
 
+
 export const verUsuarioNatural = async (req, res) => {
   try {
     const usuario = req.idUsuario;
