@@ -25,7 +25,7 @@ export const authClienteNatural = async (req, res) => {
     }
 
     const token = jwt.sign({ id: clienteFound._id }, JWT_SECRET, {
-      expiresIn: 86400,
+      expiresIn: 120,
     });
 
     res.status(200).json({
