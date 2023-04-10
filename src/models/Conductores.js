@@ -49,8 +49,8 @@ registerConductorSchema.methods.encryptPassword = async(contrasena)=>{
     return bcryptjs.hash(contrasena, 10);
 };
 
-registerConductorSchema.methods.comparePassword = async function(contrasena){
-    return await bcryptjs.compare(contrasena, this.contrasenaCON);
+registerConductorSchema.statics.comparePassword = async (contrasena, conductoresFound)=>{
+    return await bcryptjs.compare(contrasena, conductoresFound);
 }
 
 

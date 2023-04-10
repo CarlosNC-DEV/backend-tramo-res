@@ -11,6 +11,7 @@ import empresa from './routes/cliente.empresa.routes.js';
 
 import loginEmpresa from './routes/login.empresa.routes.js';
 import loginNatural from './routes/login.natural.routes.js';
+import loginConductor from './routes/login.conductor.routes.js';
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(admin);
 app.use(loginEmpresa);
 app.use(loginNatural);
+app.use(loginConductor);
 
 app.use("/admin", solicitudes);
 app.use("/admin", estado);
