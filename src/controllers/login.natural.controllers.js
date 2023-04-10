@@ -41,7 +41,7 @@ export const authClienteNatural = async (req, res) => {
 export const verUsuarioNatural = async (req, res) => {
   try {
     const usuario = req.idUsuario;
-    const usuarioNaturalFound = await ClienteNatural.findById(usuario);
+    const usuarioNaturalFound = await ClienteNatural.findById(usuario, { tipoDocumentoPNA:0, nroDocumentoPNA:0, contrasenaPNA:0, });
     if (!usuarioNaturalFound) {
       return res.status(400).json(" !Cliente Natural no existente! ");
     }
