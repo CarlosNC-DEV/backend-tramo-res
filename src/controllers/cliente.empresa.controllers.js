@@ -4,24 +4,9 @@ import ClienteEmpresa from "../models/ClienteEmpresa.js";
 export const registroClienteEmpresa = async (req, res) => {
   try {
 
-    const requestBody = JSON.parse(req.body.body);
-
-    let idImgPJU;
-    let urlImgPJU;
-
-    if (req.files.perfilImgPJU) {
-      const imagePersonaPJU = await cloudinary.uploader.upload(
-        req.files.perfilImgPJU[0].path
-      );
-      idImgPJU = imagePersonaPJU.public_id;
-      urlImgPJU = imagePersonaPJU.secure_url;
-    }
-
-    const modelPersonaEmpresa = new ClienteEmpresa(requestBody);
-    modelPersonaEmpresa.perfil.idfotoPerfilPJU = idImgPJU;
-    modelPersonaEmpresa.perfil.fotoPerfilPJU = urlImgPJU;
+    const modelPersonaEmpresa = new ClienteEmpresa(req.body);
     modelPersonaEmpresa.contrasenaPJU = await modelPersonaEmpresa.encryptPassword(
-        requestBody.contrasena
+      req.body.contrasena
     );
 
     modelPersonaEmpresa.save();

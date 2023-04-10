@@ -15,11 +15,6 @@ const personaEmpresaSchema = new Schema(
     calificacionPJU: { type: Number, default: 5 },
     numeroPedidosPJU: { type: Number, default: 0 },
 
-    perfil: {
-      idfotoPerfilPJU: { type: String, default: null },
-      fotoPerfilPJU: { type: String, default: null },
-    },
-
     estadoPJU: {
       habilitadoPJU: { type: Boolean, default: true },
       motivoInhabilitadoPJU: { type: String, default: null },

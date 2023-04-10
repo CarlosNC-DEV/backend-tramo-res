@@ -11,8 +11,7 @@ const upload = multer({
 const router = Router();
 
 // registro cliente natural
-const input = upload.fields([{ name: "perfilImgPJU" }]);
-router.post("/registroClienteEmpresa", input, registroClienteEmpresa);
+router.post("/registroClienteEmpresa", registroClienteEmpresa);
 
 // ver clientes naturales habilitados
 router.get("/datosClientesEmpresaHB", verClienteEmpresaHabilitado);
