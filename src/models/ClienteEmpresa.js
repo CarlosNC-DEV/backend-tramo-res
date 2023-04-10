@@ -30,8 +30,8 @@ personaEmpresaSchema.methods.encryptPassword = async (contrasena) => {
   return bcryptjs.hash(contrasena, 10);
 };
 
-personaEmpresaSchema.methods.comparePassword = async function (contrasena) {
-  return await bcryptjs.compare(contrasena, this.contrasenaPJU);
+personaEmpresaSchema.statics.comparePassword = async function (contrasena, contrasenaUserFound) {
+  return await bcryptjs.compare(contrasena, contrasenaUserFound);
 };
 
 export default model("PersonaJuridica", personaEmpresaSchema);

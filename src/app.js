@@ -9,6 +9,10 @@ import conductores from './routes/datos.conductores.routes.js';
 import natural from './routes/cliente.natural.routes.js';
 import empresa from './routes/cliente.empresa.routes.js';
 
+import loginEmpresa from './routes/login.empresa.routes.js';
+import loginNatural from './routes/login.natural.routes.js';
+
+
 const app = express();
 
 app.use(cors());
@@ -17,6 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(admin);
+app.use(loginEmpresa);
+app.use(loginNatural);
+
 app.use("/admin", solicitudes);
 app.use("/admin", estado);
 app.use("/admin", conductores);

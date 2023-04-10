@@ -35,8 +35,8 @@ personaNaturalSchema.methods.encryptPassword = async (contrasena) => {
   return bcryptjs.hash(contrasena, 10);
 };
 
-personaNaturalSchema.methods.comparePassword = async function (contrasena) {
-  return await bcryptjs.compare(contrasena, this.contrasenaPNA);
+personaNaturalSchema.statics.comparePassword = async function (contrasena, contrasenaUsuarioFound) {
+  return await bcryptjs.compare(contrasena, contrasenaUsuarioFound);
 };
 
 export default model("PersonaNatural", personaNaturalSchema);
