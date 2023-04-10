@@ -9,7 +9,7 @@ export const registroClienteNatural = async (req, res) => {
     let idImgPNT;
     let urlImgPNT;
 
-    if (req.files) {
+    if (req.files.perfilImgNT) {
       const imagePersonaNT = await cloudinary.uploader.upload(
         req.files.perfilImgNT[0].path
       );

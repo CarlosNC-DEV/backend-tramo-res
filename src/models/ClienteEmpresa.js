@@ -16,8 +16,8 @@ const personaEmpresaSchema = new Schema(
     numeroPedidosPJU: { type: Number, default: 0 },
 
     perfil: {
-      idfotoPerfilPJU: { type: String, required: true, default: null },
-      fotoPerfilPJU: { type: String, required: true, default: null },
+      idfotoPerfilPJU: { type: String, default: null },
+      fotoPerfilPJU: { type: String, default: null },
     },
 
     estadoPJU: {

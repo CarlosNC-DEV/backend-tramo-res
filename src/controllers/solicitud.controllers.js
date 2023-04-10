@@ -8,9 +8,8 @@ import TenedorVehiculo from "../models/TenedorVehiculo.js";
 
 export const solicitudCon = async (req, res) => {
   try {
-
     const requestBody = JSON.parse(req.body.body);
-    
+
     //Conductor
     let idImgPerfilCon;
     let urlImgPerfilCon;
@@ -67,19 +66,25 @@ export const solicitudCon = async (req, res) => {
       );
       idImgLateralDeV = fotoLateralDerecho.public_id;
       urlImglateralDeV = fotoLateralDerecho.secure_url;
+    }
 
+    if (req.files.izquierdotrailer) {
       const fotoLateralIzquierdoTrailer = await cloudinary.uploader.upload(
         req.files.izquierdotrailer[0].path
       );
       idImgLateralIzT = fotoLateralIzquierdoTrailer.public_id;
       urlImgLateralIzT = fotoLateralIzquierdoTrailer.secure_url;
+    }
 
+    if (req.files.derechotrailer) {
       const fotoLateralDerechoTrailer = await cloudinary.uploader.upload(
         req.files.derechotrailer[0].path
       );
       idImgLateralDeT = fotoLateralDerechoTrailer.public_id;
       urlImgLateralDeT = fotoLateralDerechoTrailer.secure_url;
+    }
 
+    if (req.files.volcotrailer) {
       const fotoVolcoTrailer = await cloudinary.uploader.upload(
         req.files.volcotrailer[0].path
       );

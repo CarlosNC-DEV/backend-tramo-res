@@ -16,8 +16,8 @@ const personaNaturalSchema = new Schema(
     numeroPedidosPNA: { type: Number, default: 0 },
 
     perfil: {
-      idfotoPerfilPNA: { type: String, required: true, default: null },
-      fotoPerfilPNA: { type: String, required: true, default: null },
+      idfotoPerfilPNA: { type: String, default: null },
+      fotoPerfilPNA: { type: String, default: null },
     },
 
     estadoCLN: {
