@@ -35,12 +35,12 @@ export const inhabilitarConductor = async (req, res) => {
     const { id } = req.params;
     const { motivoInhabilitadoCON } = req.body;
     if (!motivoInhabilitadoCON) {
-      return res.status(200).json(" !Se requiere un motivo de ihabilitación! ");
+      return res.status(400).json(" !Se requiere un motivo de ihabilitación! ");
     }
-    const inhabilitacionConductor = await Conductores.findByIdAndUpdate(
-      { id },
-      { motivoInhabilitadoCON, "estadoCON.habilitadoCON": false }
-    );
+    const inhabilitacionConductor = await Conductores.findByIdAndUpdate(id, {
+      motivoInhabilitadoCON,
+      "estadoCON.habilitadoCON": false,
+    });
     if (!inhabilitacionConductor) {
       return res.status(400).json(" !No se pudo Inhabilitar al Conductor!");
     }
@@ -81,18 +81,18 @@ export const conductoresInhabilitados = async (req, res) => {
 };
 
 export const habilitarConductor = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const habilitadoConductor = await Conductores.findByIdAndUpdate(
-        { id },
-        { motivoInhabilitadoCON:null , "estadoCON.habilitadoCON": true }
-      );
-      if (!habilitadoConductor) {
-        return res.status(400).json(" !No se pudo habilitar al Conductor!");
-      }
-      res.status(200).json(" !Solicitud Rechazada Correctamente! ");
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json(error);
+  try {
+    const { id } = req.params;
+    const habilitadoConductor = await Conductores.findByIdAndUpdate(id, {
+      motivoInhabilitadoCON: null,
+      "estadoCON.habilitadoCON": true,
+    });
+    if (!habilitadoConductor) {
+      return res.status(400).json(" !No se pudo habilitar al Conductor!");
     }
-  };
+    res.status(200).json(" !Solicitud Rechazada Correctamente! ");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
