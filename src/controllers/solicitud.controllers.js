@@ -178,7 +178,7 @@ export const rechazarSolicitud = async (req, res) => {
       return res.status(200).json(" !Se requiere un motivo de rechazo! ");
     }
     const solicitudRechazada = await Conductores.findByIdAndUpdate(
-      { id },
+      id,
       motivoRechazoCON
     );
     if (!solicitudRechazada) {
@@ -194,10 +194,10 @@ export const rechazarSolicitud = async (req, res) => {
 export const aceptarSolicitud = async (req, res) => {
   try {
     const { id } = req.params;
-    const solicitudAceptar = await Conductores.findByIdAndUpdate(
-      { id },
-      { "estadoCON.IngresoCON": true, "estadoCON.habilitadoCON": true }
-    );
+    const solicitudAceptar = await Conductores.findByIdAndUpdate(id, {
+      "estadoCON.IngresoCON": true,
+      "estadoCON.habilitadoCON": true,
+    });
     if (!solicitudAceptar) {
       return res.status(400).json(" ! No se pudo Aceptar la solicitud! ");
     }
