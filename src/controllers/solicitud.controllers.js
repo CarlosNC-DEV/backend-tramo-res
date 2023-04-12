@@ -159,7 +159,8 @@ export const soliPendientes = async (req, res) => {
         idConductorVeh: conductor._id,
       });
       if (vehiculoSolicitud) {
-        conductoresConVehiculos.push(conductor, vehiculoSolicitud);
+        const conductorConVehiculo = { conductor, vehiculoSolicitud };
+        conductoresConVehiculos.push(conductorConVehiculo);
       }
     }
 

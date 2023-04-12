@@ -1,5 +1,9 @@
 import Conductores from "../models/Conductores.js";
+import ContactorEmergencia from "../models/ContactorEmergencia.js";
 import Vehiculos from "../models/Vehiculos.js";
+import ImageVehiculos from "../models/ImageVehiculos.js";
+import PropietarioVehiculos from "../models/PropietarioVehiculos.js";
+import TenedorVehiculo from "../models/TenedorVehiculo.js";
 
 //Conductores habilitados
 export const conductoresHabilitados = async (req, res) => {
@@ -19,11 +23,50 @@ export const conductoresHabilitados = async (req, res) => {
         idConductorVeh: conductor._id,
       });
       if (vehiculoSolicitud) {
-        conductoresConVehiculosHabiliados.push(conductor, vehiculoSolicitud);
+        const conductorConVehiculo = { conductor, vehiculoSolicitud };
+        conductoresConVehiculosHabiliados.push(conductorConVehiculo);
       }
     }
 
     res.status(200).json(conductoresConVehiculosHabiliados);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+export const verUnicoConductorHabilitado = async (req, res) => {
+  try {
+    const conductorHailitadoFind = [];
+
+    const { id } = req.params;
+    const unicoConductor = await Conductores.findById(id);
+    const contactoEmergencia = await ContactorEmergencia.findOne({
+      idConductorCEM: unicoConductor._id,
+    });
+    const vehiculo = await Vehiculos.findOne({
+      idConductorVeh: unicoConductor._id,
+    });
+    const imagenes = await ImageVehiculos.findOne({
+      idVehiculoFotos: vehiculo._id,
+    });
+    const propietario = await PropietarioVehiculos.findOne({
+      idVehiculoPRO: vehiculo._id,
+    });
+    const tenedor = await TenedorVehiculo.findOne({
+      idVehiculoTE: vehiculo._id,
+    });
+
+    conductorHailitadoFind.push(
+      unicoConductor,
+      contactoEmergencia,
+      vehiculo,
+      imagenes,
+      propietario,
+      tenedor
+    );
+
+    res.status(200).json(conductorHailitadoFind);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -69,11 +112,50 @@ export const conductoresInhabilitados = async (req, res) => {
         idConductorVeh: conductor._id,
       });
       if (vehiculoSolicitud) {
-        conductoresConVehiculosInhabilitados.push(conductor, vehiculoSolicitud);
+        const conductorConVehiculo = { conductor, vehiculoSolicitud };
+        conductoresConVehiculosInhabilitados.push(conductorConVehiculo);
       }
     }
 
     res.status(200).json(conductoresConVehiculosInhabilitados);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+export const verUnicoConductorInhabilitado = async (req, res) => {
+  try {
+    const conductorInhabilitado = [];
+
+    const { id } = req.params;
+    const unicoConductorInhabilitado = await Conductores.findById(id);
+    const contactoEmergenciaInhabilitado = await ContactorEmergencia.findOne({
+      idConductorCEM: unicoConductorInhabilitado._id,
+    });
+    const vehiculoInhabilitado = await Vehiculos.findOne({
+      idConductorVeh: unicoConductorInhabilitado._id,
+    });
+    const imagenesInhabilitado = await ImageVehiculos.findOne({
+      idVehiculoFotos: vehiculoInhabilitado._id,
+    });
+    const propietarioInhabilitado = await PropietarioVehiculos.findOne({
+      idVehiculoPRO: vehiculoInhabilitado._id,
+    });
+    const tenedorInhabilitado = await TenedorVehiculo.findOne({
+      idVehiculoTE: vehiculoInhabilitado._id,
+    });
+
+    conductorInhabilitado.push(
+      unicoConductorInhabilitado,
+      contactoEmergenciaInhabilitado,
+      vehiculoInhabilitado,
+      imagenesInhabilitado,
+      propietarioInhabilitado,
+      tenedorInhabilitado
+    );
+
+    res.status(200).json(conductorInhabilitado);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
