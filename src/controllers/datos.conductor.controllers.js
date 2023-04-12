@@ -57,14 +57,16 @@ export const verUnicoConductorHabilitado = async (req, res) => {
       idVehiculoTE: vehiculo._id,
     });
 
-    conductorHailitadoFind.push(
+    const conductor = {
       unicoConductor,
       contactoEmergencia,
       vehiculo,
       imagenes,
       propietario,
-      tenedor
-    );
+      tenedor,
+    };
+
+    conductorHailitadoFind.push(conductor);
 
     res.status(200).json(conductorHailitadoFind);
   } catch (error) {
@@ -82,7 +84,7 @@ export const inhabilitarConductor = async (req, res) => {
     }
     const inhabilitacionConductor = await Conductores.findByIdAndUpdate(id, {
       motivoInhabilitadoCON,
-      "estadoCON.habilitadoCON": false,
+      "estadoCON.habilitadoCON": false
     });
     if (!inhabilitacionConductor) {
       return res.status(400).json(" !No se pudo Inhabilitar al Conductor!");
@@ -102,8 +104,8 @@ export const conductoresInhabilitados = async (req, res) => {
       "estadoCON.habilitadoCON": false,
       "estadoCON.conectadoCON": false,
       "estadoCON.disponibilidadCON": false,
-      motivoInhabilitadoCON: null,
-      motivoRechazoCON: { $ne: null },
+      motivoInhabilitadoCON: { $ne: null },
+      motivoRechazoCON: null,
     });
 
     const conductoresConVehiculosInhabilitados = [];
@@ -146,14 +148,16 @@ export const verUnicoConductorInhabilitado = async (req, res) => {
       idVehiculoTE: vehiculoInhabilitado._id,
     });
 
-    conductorInhabilitado.push(
+    const conductor = {
       unicoConductorInhabilitado,
       contactoEmergenciaInhabilitado,
       vehiculoInhabilitado,
       imagenesInhabilitado,
       propietarioInhabilitado,
-      tenedorInhabilitado
-    );
+      tenedorInhabilitado,
+    };
+
+    conductorInhabilitado.push(conductor);
 
     res.status(200).json(conductorInhabilitado);
   } catch (error) {
