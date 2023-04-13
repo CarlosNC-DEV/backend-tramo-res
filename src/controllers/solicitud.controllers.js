@@ -178,10 +178,9 @@ export const rechazarSolicitud = async (req, res) => {
     if (!motivoRechazoCON) {
       return res.status(400).json(" !Se requiere un motivo de rechazo! ");
     }
-    const solicitudRechazada = await Conductores.findByIdAndUpdate(
-      id,
-      motivoRechazoCON
-    );
+    const solicitudRechazada = await Conductores.findByIdAndUpdate(id, {
+      motivoRechazoCON: motivoRechazoCON
+    });
     if (!solicitudRechazada) {
       return res.status(400).json(" !No se pudo Rechazar Solicitud!");
     }
@@ -197,7 +196,7 @@ export const aceptarSolicitud = async (req, res) => {
     const { id } = req.params;
     const solicitudAceptar = await Conductores.findByIdAndUpdate(id, {
       "estadoCON.IngresoCON": true,
-      "estadoCON.habilitadoCON": true
+      "estadoCON.habilitadoCON": true,
     });
     if (!solicitudAceptar) {
       return res.status(400).json(" ! No se pudo Aceptar la solicitud! ");
@@ -218,7 +217,7 @@ export const solicitudesRechazadas = async (req, res) => {
       "estadoCON.conectadoCON": false,
       "estadoCON.disponibilidadCON": false,
       motivoInhabilitadoCON: null,
-      motivoRechazoCON: { $ne: null },
+      motivoRechazoCON: { $ne: null},
     });
 
     const conductoresConVehiculosRechazados = [];
@@ -227,7 +226,8 @@ export const solicitudesRechazadas = async (req, res) => {
         idConductorVeh: conductor._id,
       });
       if (vehiculoRechazada) {
-        conductoresConVehiculosRechazados.push(conductor, vehiculoRechazada);
+        const conductorConVehiculo = { conductor, vehiculoRechazada };
+        conductoresConVehiculosRechazados.push(conductorConVehiculo);
       }
     }
 
