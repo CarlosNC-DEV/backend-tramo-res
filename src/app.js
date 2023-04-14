@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
-//LOGINS
+//LOGINS MOVIL AND WEB HOME
 import admin from './routes/login.admin.routes.js';
 import loginEmpresa from './routes/login.empresa.routes.js';
 import loginNatural from './routes/login.natural.routes.js';
@@ -17,7 +17,7 @@ import empresa from './routes/cliente.empresa.routes.js';
 
 //MOVIL HOME CLIENTE NATURAL
 import homenatural from './routes/home.natural.routes.js';
-
+import pedidos from './routes/pedidos.routes.js';
 
 
 const app = express();
@@ -39,5 +39,7 @@ app.use("/admin", natural);
 app.use("/admin", empresa);
 
 app.use("/natural", homenatural);
+
+app.use("/user", pedidos);
 
 export default app;
