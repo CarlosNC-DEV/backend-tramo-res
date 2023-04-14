@@ -171,6 +171,53 @@ export const soliPendientes = async (req, res) => {
   }
 };
 
+export const verUnicaSolicitudPendiente = async (req, res) => {
+  try {
+    const solicitudPendiente = [];
+
+    const { id } = req.params;
+    const conductorSolicitud = await Conductores.findById(id, {
+      "estadoCON.IngresoCON": false,
+      "estadoCON.habilitadoCON": false,
+      "estadoCON.conectadoCON": false,
+      "estadoCON.disponibilidadCON": false,
+      motivoInhabilitadoCON: null,
+      motivoRechazoCON: null,
+    });
+    const contactoEmergenciaSolicitud = await ContactorEmergencia.findOne({
+      idConductorCEM: conductorSolicitud._id,
+    });
+    const vehiculoSolicitud = await Vehiculos.findOne({
+      idConductorVeh: conductorSolicitud._id,
+    });
+    const imagenesSolicitud = await ImageVehiculos.findOne({
+      idVehiculoFotos: vehiculoSolicitud._id,
+    });
+    const propietarioSolicitud = await PropietarioVehiculos.findOne({
+      idVehiculoPRO: vehiculoSolicitud._id,
+    });
+    const tenedorSolicitud = await TenedorVehiculo.findOne({
+      idVehiculoTE: vehiculoSolicitud._id,
+    });
+
+    const conductor = {
+      conductorSolicitud,
+      contactoEmergenciaSolicitud,
+      vehiculoSolicitud,
+      imagenesSolicitud,
+      propietarioSolicitud,
+      tenedorSolicitud,
+    };
+
+    solicitudPendiente.push(conductor);
+
+    res.status(200).json(solicitudPendiente);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
 export const rechazarSolicitud = async (req, res) => {
   try {
     const { id } = req.params;
@@ -232,6 +279,53 @@ export const solicitudesRechazadas = async (req, res) => {
     }
 
     res.status(200).json(conductoresConVehiculosRechazados);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+export const verUnicaSolicitudRechazada = async (req, res) => {
+  try {
+    const solicitudPendienteRechazada = [];
+
+    const { id } = req.params;
+    const conductorSolicitudRechazada = await Conductores.findById(id, {
+      "estadoCON.IngresoCON": false,
+      "estadoCON.habilitadoCON": false,
+      "estadoCON.conectadoCON": false,
+      "estadoCON.disponibilidadCON": false,
+      motivoInhabilitadoCON: null,
+      motivoRechazoCON: { $ne: null},
+    });
+    const contactoEmergenciaSolicitudRechazada = await ContactorEmergencia.findOne({
+      idConductorCEM: conductorSolicitudRechazada._id,
+    });
+    const vehiculoSolicitudRechazada = await Vehiculos.findOne({
+      idConductorVeh: conductorSolicitudRechazada._id,
+    });
+    const imagenesSolicitudRechazada = await ImageVehiculos.findOne({
+      idVehiculoFotos: vehiculoSolicitudRechazada._id,
+    });
+    const propietarioSolicitudRechazada = await PropietarioVehiculos.findOne({
+      idVehiculoPRO: vehiculoSolicitudRechazada._id,
+    });
+    const tenedorSolicitudRechazada = await TenedorVehiculo.findOne({
+      idVehiculoTE: vehiculoSolicitudRechazada._id,
+    });
+
+    const conductor = {
+      conductorSolicitudRechazada,
+      contactoEmergenciaSolicitudRechazada,
+      vehiculoSolicitudRechazada,
+      imagenesSolicitudRechazada,
+      propietarioSolicitudRechazada,
+      tenedorSolicitudRechazada,
+    };
+
+    solicitudPendienteRechazada.push(conductor);
+
+    res.status(200).json(solicitudPendienteRechazada);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
