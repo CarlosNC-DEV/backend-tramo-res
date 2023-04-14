@@ -176,14 +176,7 @@ export const verUnicaSolicitudPendiente = async (req, res) => {
     const solicitudPendiente = [];
 
     const { id } = req.params;
-    const conductorSolicitud = await Conductores.findById(id, {
-      "estadoCON.IngresoCON": false,
-      "estadoCON.habilitadoCON": false,
-      "estadoCON.conectadoCON": false,
-      "estadoCON.disponibilidadCON": false,
-      motivoInhabilitadoCON: null,
-      motivoRechazoCON: null,
-    });
+    const conductorSolicitud = await Conductores.findById(id);
     const contactoEmergenciaSolicitud = await ContactorEmergencia.findOne({
       idConductorCEM: conductorSolicitud._id,
     });
@@ -290,14 +283,7 @@ export const verUnicaSolicitudRechazada = async (req, res) => {
     const solicitudPendienteRechazada = [];
 
     const { id } = req.params;
-    const conductorSolicitudRechazada = await Conductores.findById(id, {
-      "estadoCON.IngresoCON": false,
-      "estadoCON.habilitadoCON": false,
-      "estadoCON.conectadoCON": false,
-      "estadoCON.disponibilidadCON": false,
-      motivoInhabilitadoCON: null,
-      motivoRechazoCON: { $ne: null},
-    });
+    const conductorSolicitudRechazada = await Conductores.findById(id);
     const contactoEmergenciaSolicitudRechazada = await ContactorEmergencia.findOne({
       idConductorCEM: conductorSolicitudRechazada._id,
     });
