@@ -23,8 +23,8 @@ export const conductoresDispo = async (req, res) => {
       
     }
 
-    console.log(conductoresDisponibles);
-    res.status(200).json("yes");
+    res.status(200).json(conductoresDisponibles);
+    
   } catch (error) {
     console.log(error);
     return res.status(500).json("! Error en el servidor !");
