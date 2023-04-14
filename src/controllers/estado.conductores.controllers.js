@@ -37,6 +37,17 @@ export const conductoresEnServicio = async (req, res) => {
       "estadoCON.disponibilidadCON": false,
     });
 
+    const conductoresEnServicio = [];
+    for (const conductor of coductoresEnServicio) {
+      const vehiculoEnServicio = await Vehiculos.findOne({
+        idConductorVeh: conductor._id,
+      });
+      if (vehiculoEnServicio) {
+        const conductorConVehiculo = { conductor, vehiculoEnServicio };
+        conductoresEnServicio.push(conductorConVehiculo);
+      }
+    }
+
     res.status(200).json(coductoresEnServicio);
   } catch (error) {
     console.log(error);

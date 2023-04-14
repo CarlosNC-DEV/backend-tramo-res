@@ -20,12 +20,20 @@ export const authClienteNatural = async (req, res) => {
       contrasena,
       clienteFound.contrasenaPNA
     );
+
+    if (clienteFound.estadoCLN.habilitadoPNA === false) {
+      return res.status(400).json({
+        token: null,
+        messagge: " !Cliente Inhabilitado! ",
+      });
+    }
+
     if (!validatePassword) {
       return res.status(400).json(" !Contraseña Incorrecta! ");
     }
 
     const token = jwt.sign({ id: clienteFound._id }, JWT_SECRET, {
-      expiresIn: 86400,
+      expiresIn: 320,
     });
 
     res.status(200).json({
@@ -38,11 +46,15 @@ export const authClienteNatural = async (req, res) => {
   }
 };
 
-
 export const verUsuarioNatural = async (req, res) => {
   try {
     const usuario = req.idUsuario;
-    const usuarioNaturalFound = await ClienteNatural.findById(usuario, { tipoDocumentoPNA:0, nroDocumentoPNA:0, contrasenaPNA:0, "perfil.idfotoPerfilPNA":0 });
+    const usuarioNaturalFound = await ClienteNatural.findById(usuario, {
+      tipoDocumentoPNA: 0,
+      nroDocumentoPNA: 0,
+      contrasenaPNA: 0,
+      "perfil.idfotoPerfilPNA": 0,
+    });
     if (!usuarioNaturalFound) {
       return res.status(400).json(" !Cliente Natural no existente! ");
     }
