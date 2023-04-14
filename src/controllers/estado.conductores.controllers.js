@@ -1,5 +1,5 @@
 import Conductores from "../models/Conductores.js";
-import Vehiculos from "../models/Vehiculos.js";
+import Vehiculos from '../models/Vehiculos.js';
 
 export const conductoresDispo = async (req, res) => {
   try {
@@ -16,13 +16,8 @@ export const conductoresDispo = async (req, res) => {
         idConductorVeh: conductor._id,
       });
       if (vehiculoDispo) {
-        const fotoVehiculo = await Vehiculos.findOne({
-          idConductorVeh: vehiculoDispo._id,
-        });
-        if (fotoVehiculo) {
-          const conductorConVehiculo = { conductor, vehiculoDispo, fotoVehiculo };
-          conductoresDisponibles.push(conductorConVehiculo);
-        }
+        const conductorConVehiculo = { conductor, vehiculoDispo };
+        conductoresDisponibles.push(conductorConVehiculo);
       }
     }
 
