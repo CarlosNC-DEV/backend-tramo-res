@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { storage } from '../middleware/cloudinary.js';
 
-import { solicitudCon, soliPendientes, rechazarSolicitud, aceptarSolicitud, solicitudesRechazadas } from '../controllers/solicitud.controllers.js';
+import { solicitudCon, soliPendientes, verUnicaSolicitudPendiente, rechazarSolicitud, aceptarSolicitud, solicitudesRechazadas, verUnicaSolicitudRechazada } from '../controllers/solicitud.controllers.js';
 
 const upload = multer({
     storage: storage
@@ -14,12 +14,14 @@ const input = upload.fields([{name: 'perfilImgCon'}, {name: 'frente'}, {name: 'v
 router.post("/solicitudCon", input, solicitudCon);
 
 router.get("/solicitudesPendiente", soliPendientes);
+router.get("/solicitudesPendiente/:id", verUnicaSolicitudPendiente);
 
 router.put("/rechazarSolicitud/:id", rechazarSolicitud);
 
 router.put("/aceptarSoli/:id", aceptarSolicitud);
 
 router.get("/solicitudesRechazadas", solicitudesRechazadas);
+router.get("/solicitudesRechazadas/:id", verUnicaSolicitudRechazada);
 
 
 export default router;
