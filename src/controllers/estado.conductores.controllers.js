@@ -42,13 +42,14 @@ export const conductoresEnServicio = async (req, res) => {
       const vehiculoEnServicio = await Vehiculos.findOne({
         idConductorVeh: conductor._id,
       });
+
       if (vehiculoEnServicio) {
         const conductorConVehiculo = { conductor, vehiculoEnServicio };
         conductoresEnServicio.push(conductorConVehiculo);
       }
     }
 
-    res.status(200).json(coductoresEnServicio);
+    res.status(200).json(conductoresEnServicio);
   } catch (error) {
     console.log(error);
     return res.status(500).json("! Error en el servidor !");
