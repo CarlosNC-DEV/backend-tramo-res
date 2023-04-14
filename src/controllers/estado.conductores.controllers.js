@@ -1,5 +1,6 @@
 import Conductores from "../models/Conductores.js";
-import Vehiculos from '../models/Vehiculos.js';
+import Vehiculos from "../models/Vehiculos.js";
+import ImageVehiculos from "../models/ImageVehiculos.js";
 
 export const conductoresDispo = async (req, res) => {
   try {
@@ -15,13 +16,15 @@ export const conductoresDispo = async (req, res) => {
       const vehiculoDispo = await Vehiculos.findOne({
         idConductorVeh: conductor._id,
       });
-      if (vehiculoDispo) {
-        const conductorConVehiculo = { conductor, vehiculoDispo };
-        conductoresDisponibles.push(conductorConVehiculo);
-      }
+      const ImagenVehiculo = await ImageVehiculos.findOne({ idVehiculoFotos: vehiculoDispo._id });
+
+      const conductorDispo = { conductor, vehiculoDispo, ImagenVehiculo  }
+      conductoresDisponibles.push(conductorDispo);
+      
     }
 
-    res.status(200).json(conductoresDisponibles);
+    console.log(conductoresDisponibles);
+    res.status(200).json("yes");
   } catch (error) {
     console.log(error);
     return res.status(500).json("! Error en el servidor !");

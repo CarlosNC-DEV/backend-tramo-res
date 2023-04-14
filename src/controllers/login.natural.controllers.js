@@ -64,3 +64,19 @@ export const verUsuarioNatural = async (req, res) => {
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
+
+export const actualizarUsuarioNatural = async(req, res)=>{
+  try {
+    const { id } = id.params;
+    const usuarioActulizado = await ClienteNatural.findByIdAndUpdate(id, req.body)
+    if(!usuarioActulizado){
+      return res.status(400).json(" !No se pudo Actualizar el usuario! ");
+    }
+
+    res.status(200).json(" !Cliente Actualizado Correctamente! ");
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
