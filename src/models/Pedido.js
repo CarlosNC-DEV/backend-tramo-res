@@ -2,81 +2,122 @@ import { Schema, model } from 'mongoose';
 
 const schemaPedido = new Schema(
     {
-        ubicacionCarga:{
+        recogida:{
+            latitud:{
+                type: Number,
+                float:true,
+                required: true
+            },
+            longitud:{
+                type: Number,
+                float: true,
+                required: true
+            }
+        },
+        destino:{
+            latitud:{
+                type: Number,
+                float:true,
+                required: true
+            },
+            longitud:{
+                type: Number,
+                float: true,
+                required: true
+            }
+        },
+        descripcionUbicacion:{
+            type: String
+        },
+        destinatario:{
+            tipo:{
+                type: String
+            },
+            tipoIdentificacion:{
+                type: String
+            },
+            numeroIdentificacion:{
+                type: String
+            },
+            nombreEntidad:{
+                type: String,
+                default: null
+            },
+            razonSocial:{
+                type: String,
+                default: null
+            }
+        },
+        pagoCarga:{
             type: String,
-            required: true
+            required:true
         },
-        ubicacionEntrega:{
+        pagoDescarge:{
             type: String,
-            required: true
+            required:true
         },
-
-        tipoCargaPED:{
-            type: String,
-            required: true
+        carga:{
+            tipoCarga:{
+                type: String
+            },
+            producto:{
+                type: String
+            },
+            empaque:{
+                type: String
+            },
+            riesgo:{
+                type: String
+            },
+            cantidadAproximada:{
+                type: String
+            },
+            cuidadoCarga:{
+                type: String
+            },
+            fotoCarga:{
+                idFoto:{
+                    type: String,
+                    default: null
+                },
+                urlCarga:{
+                    type: String,
+                    default: null
+                }
+            }
         },
-        productoPED:{
-            type: String,
-            required: true
-        },
-        riesgoCargaPED:{
-            type: String,
-            required: true
-        },
-        cantidadCarga:{
-            type: Number,
-            required: true
-        },
-        fragilidadPED:{
-            type: String,
-            required: true
-        },
-        idfotoCarga:{
-            type: String,
-            required: true
-        },
-
-        fotoCarga:{
-            type: String,
-            required: true
-        },
-        precioCarga:{
-            type: Number,
-            required: true
-        },
-        medioPagoPED:{
-            type: String,
-            required: true
-        },
-        comentario_PED:{
-            type: String,
-            default: null
+        metodoPago:{
+            type: String
         },
         calificacionConductorPED:{
             type: Number,
-            required: true,
-            float: true
+            default: null
         },
         calificacionServicioPED:{
             type: Number,
-            required: true,
-            float: true
+            default: null
+        },
+        id_usuario:{
+            type: Schema.Types.ObjectId,
+            required: true
         },
         id_conductor:{
             ref: "Conductores",
             type: Schema.Types.ObjectId,
-            required: true
+            default: null
         },
-        usuario:{
-            id_natural:{
-                ref: "PersonaNatural",
-                type: Schema.Types.ObjectId,
-                default: null
+        estado:{
+            enEspera:{
+                type: Boolean,
+                default: true
             },
-            id_empresa:{
-                ref: "PersonaJuridica",
-                type: Schema.Types.ObjectId,
-                default: null
+            atendiendo:{
+                type: Boolean,
+                default: false
+            },
+            terminado:{
+                type: Boolean,
+                default: false
             }
         }
     },

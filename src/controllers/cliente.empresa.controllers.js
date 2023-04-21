@@ -1,4 +1,3 @@
-import cloudinary from "cloudinary";
 import ClienteEmpresa from "../models/ClienteEmpresa.js";
 
 export const registroClienteEmpresa = async (req, res) => {

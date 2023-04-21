@@ -19,7 +19,6 @@ import empresa from './routes/cliente.empresa.routes.js';
 import homenatural from './routes/home.natural.routes.js';
 import pedidos from './routes/pedidos.routes.js';
 
-
 const app = express();
 
 app.use(cors());
@@ -39,7 +38,7 @@ app.use("/admin", natural);
 app.use("/admin", empresa);
 
 app.use("/natural", homenatural);
+app.use("/natural", pedidos);
 
-app.use("/user", pedidos);
 
 export default app;
