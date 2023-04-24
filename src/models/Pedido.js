@@ -2,6 +2,16 @@ import { Schema, model } from 'mongoose';
 
 const schemaPedido = new Schema(
     {
+        imagePedido:{
+            idImg: {
+                type: String,
+                default: null
+            },
+            urlImg:{
+                type: String,
+                default: null
+            }
+        },
         recogida:{
             latitud:{
                 type: Number,

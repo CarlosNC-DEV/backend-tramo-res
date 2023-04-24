@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import multer from 'multer';
-import { storage } from '../middleware/cloudinary.js';
 
 import { solicitudCon, soliPendientes, verUnicaSolicitudPendiente, rechazarSolicitud, aceptarSolicitud, solicitudesRechazadas, verUnicaSolicitudRechazada } from '../controllers/solicitud.controllers.js';
+
+import multer from 'multer';
+import { storage } from '../middleware/cloudinary.js';
 
 const upload = multer({
     storage: storage

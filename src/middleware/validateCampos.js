@@ -1,5 +1,7 @@
 export const validaCamposPedido = (req, res, next) => {
+
   const requestBody = JSON.parse(req.body.body);
+
   const {
     latitudRE,
     longitudRE,

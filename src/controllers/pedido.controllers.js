@@ -1,12 +1,27 @@
 import Pedido from "../models/Pedido.js";
+import cloudinary from 'cloudinary';
 
 export const crearPedido = async (req, res) => {
   try {
+
     const requestBody = JSON.parse(req.body.body);
+
+    let idImgPedido = null;
+    let urlImgPedido = null;
+
+    if (req.files.imgPedido) {
+      const imagePedido = await cloudinary.uploader.upload(
+        req.files.imgPedido[0].path
+      );
+      idImgPedido = imagePedido.public_id;
+      urlImgPedido = imagePedido.secure_url;
+    }
 
     const { latitudRE, longitudRE, latitudDE, longitudDE, tipoDES, tipoIdentificacionDES, numeroIdentificacionDES, nombreEntidadDES, razonSocialDES, tipoCarga, producto, empaque, riesgo, cantidadAproximada, cuidadoCarga } = requestBody;
 
     const pedidoModel = new Pedido(requestBody);
+    pedidoModel.imagePedido.idImg = idImgPedido;
+    pedidoModel.imagePedido.urlImg = urlImgPedido;
     pedidoModel.recogida.latitud = latitudRE;
     pedidoModel.recogida.longitud = longitudRE;
     pedidoModel.destino.latitud = latitudDE;
