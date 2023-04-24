@@ -15,3 +15,4 @@ export const validateToken = async (req, res, next) => {
     return res.status(400).json("!No autorizado!")
   }
 };
+ 

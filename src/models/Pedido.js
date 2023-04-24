@@ -86,6 +86,10 @@ const schemaPedido = new Schema(
                 }
             }
         },
+        costosViaje:{
+            type: Number,
+            require: true
+        },
         metodoPago:{
             type: String
         },

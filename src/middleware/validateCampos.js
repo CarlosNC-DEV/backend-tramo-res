@@ -19,6 +19,7 @@ export const validaCamposPedido = (req, res, next) => {
     riesgo,
     cantidadAproximada,
     cuidadoCarga,
+    costosViaje,
     metodoPago,
     id_usuario,
     id_conductor,
@@ -43,6 +44,7 @@ export const validaCamposPedido = (req, res, next) => {
     !riesgo ||
     !cantidadAproximada ||
     !cuidadoCarga ||
+    !costosViaje ||
     !metodoPago ||
     !id_usuario ||
     !id_conductor
