@@ -22,10 +22,7 @@ export const authClienteNatural = async (req, res) => {
     );
 
     if (clienteFound.estadoCLN.habilitadoPNA === false) {
-      return res.status(400).json({
-        token: null,
-        messagge: " !Cliente Inhabilitado! ",
-      });
+      return res.status(400).json("!Cliente Inhabilitado!");
     }
 
     if (!validatePassword) {

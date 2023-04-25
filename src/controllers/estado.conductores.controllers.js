@@ -16,15 +16,15 @@ export const conductoresDispo = async (req, res) => {
       const vehiculoDispo = await Vehiculos.findOne({
         idConductorVeh: conductor._id,
       });
-      const ImagenVehiculo = await ImageVehiculos.findOne({ idVehiculoFotos: vehiculoDispo._id });
+      const ImagenVehiculo = await ImageVehiculos.findOne({
+        idVehiculoFotos: vehiculoDispo._id,
+      });
 
-      const conductorDispo = { conductor, vehiculoDispo, ImagenVehiculo  }
+      const conductorDispo = { conductor, vehiculoDispo, ImagenVehiculo };
       conductoresDisponibles.push(conductorDispo);
-      
     }
 
     res.status(200).json(conductoresDisponibles);
-    
   } catch (error) {
     console.log(error);
     return res.status(500).json("! Error en el servidor !");
@@ -53,6 +53,44 @@ export const conductoresEnServicio = async (req, res) => {
     }
 
     res.status(200).json(conductoresEnServicio);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("! Error en el servidor !");
+  }
+};
+
+export const pasarConductorDisponible = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateConductorDisponible = await Conductores.findByIdAndUpdate(id, {
+      "estadoCON.conectadoCON": true,
+      "estadoCON.disponibilidadCON": true,
+    });
+    if (!updateConductorDisponible) {
+      return res
+        .status(400)
+        .json("No se puedo pasar a disponible le conductor");
+    }
+    res.status(200).json("Conductor Disponible Correctamente");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("! Error en el servidor !");
+  }
+};
+
+export const pasarConductorEnServicio = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateConductorServicio = await Conductores.findByIdAndUpdate(id, {
+      "estadoCON.conectadoCON": true,
+      "estadoCON.disponibilidadCON": false,
+    });
+    if (!updateConductorServicio) {
+      return res
+        .status(400)
+        .json("No se puedo pasar el conductor a en servicio");
+    }
+    res.status(200).json("Conductor en servicio");
   } catch (error) {
     console.log(error);
     return res.status(500).json("! Error en el servidor !");
