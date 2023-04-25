@@ -6,10 +6,10 @@ const personaNaturalSchema = new Schema(
     nombrePNA: { type: String, required: true },
     apellidoPNA: { type: String, required: true },
     tipoDocumentoPNA: { type: String, required: true },
-    nroDocumentoPNA: { type: String, required: true },
+    nroDocumentoPNA: { type: String, required: true, unique:true },
     DireccionPNA: { type: String, required: true },
     nroTelefonoPNA: { type: String, required: true },
-    correoElectronicoPNA: { type: String, required: true },
+    correoElectronicoPNA: { type: String, required: true, unique:true },
     contrasenaPNA: { type: String, required: true },
 
     calificacionPNA: { type: Number, default: 5 },

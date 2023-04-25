@@ -17,6 +17,14 @@ export const registroClienteNatural = async (req, res) => {
       urlImgPNT = imagePersonaNT.secure_url;
     }
 
+    const documentoNaturalFound = await ClienteNatural.findOne({nroDocumentoPNA: requestBody.nroDocumentoPNA});
+    const correoNaturalFound = await ClienteNatural.findOne({correoElectronicoPNA: requestBody.correoElectronicoPNA});
+    if(documentoNaturalFound){
+        res.status(400).json("Número identidad ya registrado y en uso en la app TRAMO");
+    }else if(correoNaturalFound){
+        res.status(400).json("Correo electrónico ya registrado y en uso en la app TRAMO");
+    }
+
     const modelPersonaNatural = new ClienteNatural(requestBody);
     modelPersonaNatural.perfil.idfotoPerfilPNA = idImgPNT;
     modelPersonaNatural.perfil.fotoPerfilPNA = urlImgPNT;

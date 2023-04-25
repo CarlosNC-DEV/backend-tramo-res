@@ -3,6 +3,14 @@ import ClienteEmpresa from "../models/ClienteEmpresa.js";
 export const registroClienteEmpresa = async (req, res) => {
   try {
 
+    const nitEmpresaFound = await ClienteEmpresa.findOne({NITempresa: req.body.NITempresa});
+    const correoEmpresaFound = await ClienteEmpresa.findOne({correoElectronicoPJU: req.body.correoElectronicoPJU});
+    if(nitEmpresaFound){
+        res.status(400).json("NIT empresa ya registrado y en uso en la app TRAMO");
+    }else if(correoEmpresaFound){
+        res.status(400).json("Correo electrónico ya registrado y en uso en la app TRAMO");
+    }
+
     const modelPersonaEmpresa = new ClienteEmpresa(req.body);
     modelPersonaEmpresa.contrasenaPJU = await modelPersonaEmpresa.encryptPassword(
       req.body.contrasena

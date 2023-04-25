@@ -92,6 +92,14 @@ export const solicitudCon = async (req, res) => {
       urlImgVolcoT = fotoVolcoTrailer.secure_url;
     }
 
+    const conductorDocumentoFound = await Conductores.findOne({nroDocumentoCON: requestBody.nroDocumentoCON});
+    const conductorCorreoFound = await Conductores.findOne({correoElectronicoCON: requestBody.correoElectronicoCON});
+    if(conductorDocumentoFound){
+      res.status(400).json("Número identidad ya registrado y en uso en la app TRAMO");
+    }else if(conductorCorreoFound){
+      res.status(400).json("Correo electrónico ya registrado y en uso en la app TRAMO");
+    }
+
     const conductorModel = new Conductores(requestBody);
     conductorModel.perfil.idfotoperfilCON = idImgPerfilCon;
     conductorModel.perfil.fotoperfilCON = urlImgPerfilCon;
@@ -103,6 +111,14 @@ export const solicitudCon = async (req, res) => {
     const contactoEmergenciaModel = new ContactorEmergencia(requestBody);
     contactoEmergenciaModel.idConductorCEM = conductorSave._id;
     await contactoEmergenciaModel.save();
+
+    const placasVehiculoFound = await Vehiculos.findOne({placaVehiculo: requestBody.placaVehiculo});
+    const placasTrailerFound = await Vehiculos.findOne({placasTrailer: requestBody.placasTrailer});
+    if(placasVehiculoFound){
+      res.status(400).json("Placas vehículo ya registrado y en uso en la app TRAMO")
+    }else if(placasTrailerFound){
+      res.status(400).json("Placas trailer ya registrado y en uso en la app TRAMO")
+    }
 
     const vehiculoModel = new Vehiculos(requestBody);
     vehiculoModel.idConductorVeh = conductorSave._id;

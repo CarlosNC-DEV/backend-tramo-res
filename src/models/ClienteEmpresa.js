@@ -6,10 +6,10 @@ const personaEmpresaSchema = new Schema(
     nombreEmpresa: { type: String, required: true },
     razonSocialEmpresa: { type: String, required: true },
     nomRepresentanteLegal: { type: String, required: true },
-    NITempresa: { type: String, required: true },
+    NITempresa: { type: String, required: true, unique:true },
     DireccionEmpresa: { type: String, required: true },
     nroTelefonoPJU: { type: String, required: true },
-    correoElectronicoPJU: { type: String, required: true },
+    correoElectronicoPJU: { type: String, required: true, unique:true },
     contrasenaPJU: { type: String, required: true },
 
     calificacionPJU: { type: Number, default: 5 },
