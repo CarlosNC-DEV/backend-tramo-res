@@ -32,9 +32,7 @@ export const authConductor = async (req, res) => {
 
     const ingresado = conductorFound.estadoCON.IngresoCON;
     const habilitado = conductorFound.estadoCON.habilitadoCON;
-    const conectado = conductorFound.estadoCON.conectadoCON;
-    const disponible = conductorFound.estadoCON.disponibilidadCON;
-    if (!ingresado || !habilitado || !conectado || !disponible) {
+    if (!ingresado || !habilitado) {
       return res.status(400).json({
         token: null,
         messagge: "!Debes esperar a ser acepetado en la app TRAMO!",
