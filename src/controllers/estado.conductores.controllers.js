@@ -78,6 +78,28 @@ export const pasarConductorDisponible = async (req, res) => {
   }
 };
 
+export const pasarConductorNoDisponible = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateConductorNoDisponible = await Conductores.findByIdAndUpdate(
+      id,
+      {
+        "estadoCON.conectadoCON": false,
+        "estadoCON.disponibilidadCON": false,
+      }
+    );
+    if (!updateConductorNoDisponible) {
+      return res
+        .status(400)
+        .json("No se puedo pasar a disponible le conductor");
+    }
+    res.status(200).json("Conductor Disponible Correctamente");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("! Error en el servidor !");
+  }
+};
+
 export const pasarConductorEnServicio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -91,6 +113,25 @@ export const pasarConductorEnServicio = async (req, res) => {
         .json("No se puedo pasar el conductor a en servicio");
     }
     res.status(200).json("Conductor en servicio");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("! Error en el servidor !");
+  }
+};
+
+export const pasarConductorEnNoServicio = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateConductorNoServicio = await Conductores.findByIdAndUpdate(id, {
+      "estadoCON.conectadoCON": true,
+      "estadoCON.disponibilidadCON": true,
+    });
+    if (!updateConductorNoServicio) {
+      return res
+        .status(400)
+        .json("No se puedo pasar el conductor a disponible");
+    }
+    res.status(200).json("Conductor Disponible");
   } catch (error) {
     console.log(error);
     return res.status(500).json("! Error en el servidor !");
