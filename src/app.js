@@ -43,5 +43,4 @@ app.use("/admin", empresa);
 app.use("/natural", homenatural);
 app.use("/natural", pedidos);
 
-
 export default app;

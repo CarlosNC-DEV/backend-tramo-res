@@ -50,6 +50,7 @@ const enviarMensaje = () => {
     });
 };*/
 
+
 export const actualizarDatosConductor = async(req, res)=>{
     try {
         const { id } = req.params;
