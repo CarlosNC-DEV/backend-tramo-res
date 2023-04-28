@@ -44,16 +44,4 @@ export const authClienteEmpresa = async (req, res) => {
   }
 };
 
-export const verClienteEmpresa = async (req, res) => {
-  try {
-    const usuario = req.idUsuario;
-    const usuarioEmpresaFound = await ClienteEmpresa.findById(usuario);
-    if (!usuarioEmpresaFound) {
-      return res.status(400).json(" !Cliente Empresa no existente! ");
-    }
-    res.status(200).json(usuarioEmpresaFound);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(" !Error en el servidor! ");
-  }
-};
+

@@ -17,6 +17,7 @@ import empresa from './routes/cliente.empresa.routes.js';
 
 //MOVIL HOME CLIENTE NATURAL
 import homenatural from './routes/home.natural.routes.js';
+import conductor from './routes/home.conductor.routes.js';
 import pedidos from './routes/pedidos.routes.js';
 
 const app = express();
@@ -30,6 +31,8 @@ app.use(admin);
 app.use(loginEmpresa);
 app.use(loginNatural);
 app.use(loginConductor);
+
+app.use(conductor);
 
 app.use("/admin", solicitudes);
 app.use("/admin", estado);

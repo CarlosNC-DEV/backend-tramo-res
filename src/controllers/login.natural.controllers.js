@@ -43,37 +43,3 @@ export const authClienteNatural = async (req, res) => {
   }
 };
 
-export const verUsuarioNatural = async (req, res) => {
-  try {
-    const usuario = req.idUsuario;
-    const usuarioNaturalFound = await ClienteNatural.findById(usuario, {
-      tipoDocumentoPNA: 0,
-      nroDocumentoPNA: 0,
-      contrasenaPNA: 0,
-      "perfil.idfotoPerfilPNA": 0,
-    });
-    if (!usuarioNaturalFound) {
-      return res.status(400).json(" !Cliente Natural no existente! ");
-    }
-    res.status(200).json(usuarioNaturalFound);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(" !Error en el servidor! ");
-  }
-};
-
-export const actualizarUsuarioNatural = async(req, res)=>{
-  try {
-    const { id } = id.params;
-    const usuarioActulizado = await ClienteNatural.findByIdAndUpdate(id, req.body)
-    if(!usuarioActulizado){
-      return res.status(400).json(" !No se pudo Actualizar el usuario! ");
-    }
-
-    res.status(200).json(" !Cliente Actualizado Correctamente! ");
-
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(" !Error en el servidor! ");
-  }
-}
