@@ -35,6 +35,11 @@ const registerConductorSchema = new Schema({
     disponibilidadCON :{ type: Boolean,default: false },
   },
 
+  token_fbs:{
+    type: String,
+    default: null
+  },
+
   
   motivoRechazoCON :{ type: String, default: null },
   motivoInhabilitadoCON :{ type: String, default: null },

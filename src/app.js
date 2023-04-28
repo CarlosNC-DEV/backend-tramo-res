@@ -40,7 +40,7 @@ app.use("/admin", conductores);
 app.use("/admin", natural);
 app.use("/admin", empresa);
 
-app.use("/natural", homenatural);
+app.use(homenatural);
 app.use("/natural", pedidos);
 
 export default app;

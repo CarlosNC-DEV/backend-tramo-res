@@ -1,9 +1,21 @@
 import Pedido from "../models/Pedido.js";
-import cloudinary from 'cloudinary';
+import cloudinary from "cloudinary";
+import admin from "firebase-admin";
+import { CLIENTEMAIL_FBS, PRIVATEKEY_FBS, PROJECTID_FBS } from "../config.js";
+import Conductores from "../models/Conductores.js";
+import ClienteNatural from "../models/ClienteNatural.js";
+
+// inicializa la app de Firebase
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: PROJECTID_FBS,
+    clientEmail: CLIENTEMAIL_FBS,
+    privateKey: PRIVATEKEY_FBS,
+  }),
+});
 
 export const crearPedido = async (req, res) => {
   try {
-
     const requestBody = JSON.parse(req.body.body);
 
     let idImgPedido = null;
@@ -17,7 +29,23 @@ export const crearPedido = async (req, res) => {
       urlImgPedido = imagePedido.secure_url;
     }
 
-    const { latitudRE, longitudRE, latitudDE, longitudDE, tipoDES, tipoIdentificacionDES, numeroIdentificacionDES, nombreEntidadDES, razonSocialDES, tipoCarga, producto, empaque, riesgo, cantidadAproximada, cuidadoCarga } = requestBody;
+    const {
+      latitudRE,
+      longitudRE,
+      latitudDE,
+      longitudDE,
+      tipoDES,
+      tipoIdentificacionDES,
+      numeroIdentificacionDES,
+      nombreEntidadDES,
+      razonSocialDES,
+      tipoCarga,
+      producto,
+      empaque,
+      riesgo,
+      cantidadAproximada,
+      cuidadoCarga,
+    } = requestBody;
 
     const pedidoModel = new Pedido(requestBody);
     pedidoModel.imagePedido.idImg = idImgPedido;
@@ -39,13 +67,68 @@ export const crearPedido = async (req, res) => {
     pedidoModel.carga.cuidadoCarga = cuidadoCarga;
     pedidoModel.carga.cuidadoCarga = cuidadoCarga;
 
-    await pedidoModel.save();
+    const pedidoSave = await pedidoModel.save();
 
+    const conductorFound = await Conductores.findById(pedidoSave.id_conductor);
+    const usuarioNatural = await ClienteNatural.findById(pedidoSave.id_usuario);
+    if (usuarioNatural) {
+      var tipo = "natural";
+      const { token_fbs } = conductorFound;
+      notificacionPedido(token_fbs, usuarioNatural, pedidoSave, tipo);
+    } else if (!usuarioNatural) {
+      var tipo = "empresa";
+      const usuarioEmpresa = await ClienteNatural.findById(
+        pedidoSave.id_usuario
+      );
+      notificacionPedido(token_fbs, usuarioEmpresa, pedidoSave, tipo);
+    }
     res.status(200).json("Pedido en proceso de aceptación");
-
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
+  }
+};
+
+const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
+  try {
+    var nombre ;
+    var telefono ;
+    if(tipo === "natural"){
+      console.log("Natural")
+      nombre = usuario.nombrePNA;
+      telefono = usuario.nroTelefonoPNA;
+    }else if(tipo === "empresa"){
+      nombre = usuario.nombreEmpresa;
+      telefono = usuario.nroTelefonoPJU;
+    }
+
+    const message = {
+      notification: {
+        title: "Título de la notificación",
+        body: "Cuerpo de la notificación",
+      },
+      data: {
+        // usuario
+        nombre: nombre,
+        telefono: telefono.toString(),
+        // pedido
+        imgPedido: pedidoSave.imagePedido.urlImg,
+        riegoCarga: pedidoSave.carga.riesgo,
+        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
+        producto: pedidoSave.carga.producto,
+        cuidadoCarga : pedidoSave.carga.cuidadoCarga,
+        ubicacionCarga: "No implemetada mi bebes",
+        destinoCarga: "No implemetada mi bebes",
+        precioCarga: pedidoSave.costosViaje.toString()
+      },
+      token: token_fbs,
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log("Mensaje enviado:", response);
+  } catch (error) {
+    console.log(error);
+    return;
   }
 };
 
