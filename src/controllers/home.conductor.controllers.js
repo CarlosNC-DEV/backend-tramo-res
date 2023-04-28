@@ -12,21 +12,14 @@ var serverKey =
 
 export const verConductor = async (req, res) => {
   try {
+    enviarMensaje();
+
     const usuario = req.idUsuario;
     const conductorFound = await Conductores.findById(usuario);
     if (!conductorFound) {
       return res.status(400).json(" !Conductor no existente! ");
     }
     res.status(200).json(conductorFound);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(" !Error en el servidor! ");
-  }
-};
-
-export const apiNotificaciones = async (req, res) => {
-  try {
-    enviarMensaje();
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
