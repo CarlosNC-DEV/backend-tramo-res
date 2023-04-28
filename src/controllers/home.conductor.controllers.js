@@ -1,18 +1,17 @@
 import Conductores from "../models/Conductores.js";
-import admin from "firebase-admin";
-import serviceAccount from "../libs/tramo-14fa8-firebase-adminsdk-bjn43-6791f87bea.json" assert { type: "json" };
+// import admin from "firebase-admin";
+// import serviceAccount from "../libs/tramo-14fa8-firebase-adminsdk-bjn43-6791f87bea.json" assert { type: "json" };
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-const fcmOne = admin.messaging();
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
+// const fcmOne = admin.messaging();
 
-var serverKey =
-  "AAAAp3ejXd8:APA91bGx7uQIB10Bdc9s9ZPy-m97_yu2VbuF0Sf5haCIIuIXVuzBKCDvHl9LXhlTNHsMRT5Z5XJaaoKPyfEqKnlqyC0yxK_JCaPlO91EAt_7phxfs4iGJShd4VxV7TY4_TZKrAyQr9uG";
+// var serverKey =
+//   "AAAAp3ejXd8:APA91bGx7uQIB10Bdc9s9ZPy-m97_yu2VbuF0Sf5haCIIuIXVuzBKCDvHl9LXhlTNHsMRT5Z5XJaaoKPyfEqKnlqyC0yxK_JCaPlO91EAt_7phxfs4iGJShd4VxV7TY4_TZKrAyQr9uG";
 
 export const verConductor = async (req, res) => {
   try {
-    enviarMensaje();
 
     const usuario = req.idUsuario;
     const conductorFound = await Conductores.findById(usuario);
@@ -27,6 +26,7 @@ export const verConductor = async (req, res) => {
 };
 
 // Notificacion
+/*
 const enviarMensaje = () => {
   const message = {
     notification: {
@@ -48,7 +48,7 @@ const enviarMensaje = () => {
     .catch((error) => {
       console.log("Error al enviar mensaje:", error);
     });
-};
+};*/
 
 export const actualizarDatosConductor = async(req, res)=>{
     try {
