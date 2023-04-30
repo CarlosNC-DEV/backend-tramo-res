@@ -109,6 +109,8 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         body: "Cuerpo de la notificación",
       },
       data: {
+        // tipo de datos para validacion
+        tipo: "pedido",
         // usuario
         nombre: nombre,
         telefono: telefono.toString(),
