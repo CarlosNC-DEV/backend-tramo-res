@@ -115,6 +115,7 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         nombre: nombre,
         telefono: telefono.toString(),
         // pedido
+        idPedido: pedidoSave._id,
         imgPedido: pedidoSave.imagePedido.urlImg,
         riegoCarga: pedidoSave.carga.riesgo,
         cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
