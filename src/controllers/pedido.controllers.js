@@ -92,15 +92,15 @@ export const crearPedido = async (req, res) => {
 
 const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
   try {
-    var imgPerfil;
+    var imgPerfilUsuario;
     var nombre;
     var telefono;
     if (tipo === "natural") {
-      imgPerfil = usuario.perfil.fotoPerfilPNA;
+      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
       nombre = usuario.nombrePNA;
       telefono = usuario.nroTelefonoPNA;
     } else if (tipo === "empresa") {
-      imgPerfil = null;
+      imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
       nombre = usuario.nombreEmpresa;
       telefono = usuario.nroTelefonoPJU;
     }
@@ -114,7 +114,7 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         // tipo de datos para validacion
         tipo: "pedido",
         // usuario
-        imgPerfil: imgPerfil,
+        imgPerfil: imgPerfilUsuario,
         nombre: nombre,
         telefono: telefono.toString(),
         // pedido
@@ -124,8 +124,8 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
         producto: pedidoSave.carga.producto,
         cuidadoCarga: pedidoSave.carga.cuidadoCarga,
-        ubicacionCarga: "No implemetada mi bebes",
-        destinoCarga: "No implemetada mi bebes",
+        ubicacionCarga: "No implemetada",
+        destinoCarga: "No implemetada",
         precioCarga: pedidoSave.costosViaje.toString(),
       },
       token: token_fbs,
