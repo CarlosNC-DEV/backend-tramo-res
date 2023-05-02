@@ -92,13 +92,15 @@ export const crearPedido = async (req, res) => {
 
 const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
   try {
+    var imgPerfil;
     var nombre;
     var telefono;
     if (tipo === "natural") {
-      console.log("Natural");
+      imgPerfil = usuario.perfil.fotoPerfilPNA;
       nombre = usuario.nombrePNA;
       telefono = usuario.nroTelefonoPNA;
     } else if (tipo === "empresa") {
+      imgPerfil = null;
       nombre = usuario.nombreEmpresa;
       telefono = usuario.nroTelefonoPJU;
     }
@@ -112,6 +114,7 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         // tipo de datos para validacion
         tipo: "pedido",
         // usuario
+        imgPerfil: imgPerfil,
         nombre: nombre,
         telefono: telefono.toString(),
         // pedido
@@ -138,7 +141,7 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
 
 export const aceptarPedido = async (req, res) => {
   try {
-    
+
     const { id } = req.params;
     const pedidoAceptado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": false,
