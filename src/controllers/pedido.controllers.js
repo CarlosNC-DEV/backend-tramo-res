@@ -115,7 +115,7 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         nombre: nombre,
         telefono: telefono.toString(),
         // pedido
-        idPedido: pedidoSave._id,
+        idPedido: pedidoSave._id.toString(),
         imgPedido: pedidoSave.imagePedido.urlImg,
         riegoCarga: pedidoSave.carga.riesgo,
         cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
@@ -138,13 +138,14 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
 
 export const aceptarPedido = async (req, res) => {
   try {
+    
     const { id } = req.params;
-
     const pedidoAceptado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": false,
       "estado.atendiendo": true,
       "estado.terminado": false,
     });
+
 
     if (!pedidoAceptado) {
       return res.status(400).json("! No se pudo aceptar el pedido!");

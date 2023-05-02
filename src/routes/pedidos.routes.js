@@ -13,8 +13,9 @@ const router = Router()
 
 const input = upload.fields([{name: 'imgPedido'}]);
 router.post("/crearPedido", input, validaCamposPedido, crearPedido);
-router.post("/aceptarPedido", aceptarPedido);
-router.post("/rechazarPedido", rechazarPedido);
-router.post("/verPedido", verEstadoPedido);
+
+router.put("/aceptarPedido/:id", aceptarPedido);
+router.put("/rechazarPedido/:id", rechazarPedido);
+router.get("/verPedido", verEstadoPedido);
 
 export default router;

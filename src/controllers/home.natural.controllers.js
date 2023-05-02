@@ -22,9 +22,10 @@ export const verUsuarioNatural = async (req, res) => {
 
 export const actualizarUsuarioNatural = async (req, res) => {
   try {
+    const requestBody = JSON.parse(req.body.body);
     const { id } = req.params;
-    const { nombrePNA, apellidoPNA, DireccionPNA, nroTelefonoPNA  } = req.body;
-    if (!usuario || !nombreCompleto) {
+    const { nombrePNA, apellidoPNA, DireccionPNA, nroTelefonoPNA  } = requestBody;
+    if (!nombrePNA || !apellidoPNA || !DireccionPNA || !nroTelefonoPNA) {
       return res.status(400).json("Todos los datos son requeridos");
     }
 
@@ -37,8 +38,6 @@ export const actualizarUsuarioNatural = async (req, res) => {
       );
       idImgUsuario = result.public_id;
       urlImgUsuario = result.secure_url;
-    } else {
-      return res.status(400).json("Se requiere imagen de foto de perfil");
     }
 
     const updateData = {
@@ -51,6 +50,8 @@ export const actualizarUsuarioNatural = async (req, res) => {
         fotoPerfilPNA: urlImgUsuario,
       },
     };
+
+
 
     await ClienteNatural.findByIdAndUpdate(id, updateData);
 
