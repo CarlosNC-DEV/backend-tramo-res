@@ -4,6 +4,9 @@ import admin from "firebase-admin";
 import { CLIENTEMAIL_FBS, PRIVATEKEY_FBS, PROJECTID_FBS } from "../config.js";
 import Conductores from "../models/Conductores.js";
 import ClienteNatural from "../models/ClienteNatural.js";
+import ClienteEmpresa from "../models/ClienteEmpresa.js";
+import TenedorVehiculo from "../models/TenedorVehiculo.js";
+import Vehiculos from "../models/Vehiculos.js";
 
 // inicializa la app de Firebase
 admin.initializeApp({
@@ -78,7 +81,7 @@ export const crearPedido = async (req, res) => {
       notificacionPedido(token_fbs, usuarioNatural, pedidoSave, tipo);
     } else if (!usuarioNatural) {
       var tipo = "empresa";
-      const usuarioEmpresa = await ClienteNatural.findById(
+      const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoSave.id_usuario
       );
       notificacionPedido(token_fbs, usuarioEmpresa, pedidoSave, tipo);
@@ -100,7 +103,8 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
       nombre = usuario.nombrePNA;
       telefono = usuario.nroTelefonoPNA;
     } else if (tipo === "empresa") {
-      imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+      imgPerfilUsuario =
+        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
       nombre = usuario.nombreEmpresa;
       telefono = usuario.nroTelefonoPJU;
     }
@@ -124,8 +128,13 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
         producto: pedidoSave.carga.producto,
         cuidadoCarga: pedidoSave.carga.cuidadoCarga,
-        ubicacionCarga: "No implemetada",
-        destinoCarga: "No implemetada",
+
+        latitudInicial: pedidoSave.recogida.latitud.toString(),
+        longitudInicial: pedidoSave.recogida.longitud.toString(),
+
+        latitudFinal: pedidoSave.destino.latitud.toString(),
+        longitudFinal: pedidoSave.destino.longitud.toString(),
+
         precioCarga: pedidoSave.costosViaje.toString(),
       },
       token: token_fbs,
@@ -143,7 +152,7 @@ export const aceptarPedido = async (req, res) => {
   try {
     const { id } = req.params;
     const pedidoFound = await Pedido.findById(id).lean();
-    if(pedidoFound.estado.atendiendo === true){
+    if (pedidoFound.estado.atendiendo === true) {
       return res.status(400).json("El pedido ya a sido aceptado");
     }
     const pedidoAceptado = await Pedido.findByIdAndUpdate(id, {
@@ -151,7 +160,6 @@ export const aceptarPedido = async (req, res) => {
       "estado.atendiendo": true,
       "estado.terminado": false,
     });
-
 
     if (!pedidoAceptado) {
       return res.status(400).json("! No se pudo aceptar el pedido!");
@@ -213,13 +221,13 @@ export const pedidoEnEspera = async (req, res) => {
   }
 };
 
-export const terminarPedido = async(req, res)=>{
+export const terminarPedido = async (req, res) => {
   try {
     const { id } = req.params;
     const pedidoFound = await Pedido.findById(id).lean();
-    if(pedidoFound.estado.terminado === true){
+    if (pedidoFound.estado.terminado === true) {
       return res.status(400).json("El pedido ya a sido terminado");
-    }else if(pedidoFound.estado.atendiendo === false){
+    } else if (pedidoFound.estado.atendiendo === false) {
       return res.status(400).json("El pedido no a sido atendido");
     }
 
@@ -234,6 +242,59 @@ export const terminarPedido = async(req, res)=>{
     }
 
     res.status(200).json("Pedido Terminado");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+};
+
+export const calificacionPedido = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { calificacionCON, calificacionSEV } = req.body;
+    if (!calificacionCON || !calificacionSEV) {
+      return res.status(400).json("Las calificaciones son requeridas");
+    }
+    const pedidoCalificado = await Pedido.findByIdAndUpdate(id, {
+      calificacionConductorPED: calificacionCON,
+      calificacionServicioPED: calificacionSEV,
+    });
+    if (!pedidoCalificado) {
+      return res
+        .status(400)
+        .json("No se puedo calificar el conductor y servicio");
+    }
+
+    res.status(200).json("Pedido Calificado");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+};
+
+export const verManifiestos = async(req, res)=>{
+  try {
+    
+    const manifiestoEnd = [];
+
+    const pedidoManiestos = await Pedido.find({
+      "estado.enEspera": false,
+      "estado.atendiendo": false,
+      "estado.terminado": true,
+      calificacionConductorPED: {$ne: null},
+      calificacionServicioPED: {$ne: null}
+    }).populate("id_conductor").lean();
+
+    const idConductorFound = pedidoManiestos.map((res)=> res.id_conductor);
+    const vehiculoFound = await Vehiculos.findOne({idConductorVeh: idConductorFound});
+    const tenedorFound = await TenedorVehiculo.findOne({idVehiculoTE: vehiculoFound._id})
+
+    const dataManiesto = { pedidoManiestos, vehiculoFound, tenedorFound };
+    manifiestoEnd.push(dataManiesto);
+
+
+    res.status(200).json(manifiestoEnd);
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
