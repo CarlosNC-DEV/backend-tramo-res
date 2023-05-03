@@ -141,8 +141,11 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
 
 export const aceptarPedido = async (req, res) => {
   try {
-
     const { id } = req.params;
+    const pedidoFound = await Pedido.findById(id).lean();
+    if(pedidoFound.estado.atendiendo === true){
+      return res.status(400).json("El pedido ya a sido aceptado");
+    }
     const pedidoAceptado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": false,
       "estado.atendiendo": true,
@@ -209,3 +212,30 @@ export const pedidoEnEspera = async (req, res) => {
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
+
+export const terminarPedido = async(req, res)=>{
+  try {
+    const { id } = req.params;
+    const pedidoFound = await Pedido.findById(id).lean();
+    if(pedidoFound.estado.terminado === true){
+      return res.status(400).json("El pedido ya a sido terminado");
+    }else if(pedidoFound.estado.atendiendo === false){
+      return res.status(400).json("El pedido no a sido atendido");
+    }
+
+    const pedidoTerminado = await Pedido.findByIdAndUpdate(id, {
+      "estado.enEspera": false,
+      "estado.atendiendo": false,
+      "estado.terminado": true,
+    });
+
+    if (!pedidoTerminado) {
+      return res.status(400).json("! No se pudo terminar el pedido!");
+    }
+
+    res.status(200).json("Pedido Terminado");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}

@@ -84,16 +84,6 @@ const schemaPedido = new Schema(
             },
             cuidadoCarga:{
                 type: String
-            },
-            fotoCarga:{
-                idFoto:{
-                    type: String,
-                    default: null
-                },
-                urlCarga:{
-                    type: String,
-                    default: null
-                }
             }
         },
         costosViaje:{

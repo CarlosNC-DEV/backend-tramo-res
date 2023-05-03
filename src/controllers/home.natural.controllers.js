@@ -1,5 +1,6 @@
 import Conductores from "../models/Conductores.js";
 import ClienteNatural from "../models/ClienteNatural.js";
+import cloudinary from 'cloudinary';
 
 export const verUsuarioNatural = async (req, res) => {
   try {
@@ -34,10 +35,12 @@ export const actualizarUsuarioNatural = async (req, res) => {
 
     if (req.files.perfilImgNT) {
       const result = await cloudinary.uploader.upload(
-        req.files.fotoPerfilAc[0].path
+        req.files.perfilImgNT[0].path
       );
       idImgUsuario = result.public_id;
       urlImgUsuario = result.secure_url;
+    }else{
+      return res.status(400).json("La imagen de perfil es requerida");
     }
 
     const updateData = {
