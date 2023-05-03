@@ -287,10 +287,24 @@ export const verManifiestos = async(req, res)=>{
 
     const idConductorFound = pedidoManiestos.map((res)=> res.id_conductor);
     const vehiculoFound = await Vehiculos.findOne({idConductorVeh: idConductorFound});
-    const tenedorFound = await TenedorVehiculo.findOne({idVehiculoTE: vehiculoFound._id})
+    const tenedorFound = await TenedorVehiculo.findOne({idVehiculoTE: vehiculoFound._id});
 
-    const dataManiesto = { pedidoManiestos, vehiculoFound, tenedorFound };
-    manifiestoEnd.push(dataManiesto);
+    const idClienteFound = pedidoManiestos.map((res)=> res.id_usuario);
+    const clienteEmpresaFound = await ClienteEmpresa.findById(idClienteFound);
+    const clienteNaturalFound = await ClienteNatural.findById(idClienteFound);
+    
+    if(clienteNaturalFound){
+      let cliente = clienteNaturalFound;
+      const dataManiesto = { pedidoManiestos, cliente, vehiculoFound, tenedorFound };
+      manifiestoEnd.push(dataManiesto);
+    }else if(clienteEmpresaFound){
+      let cliente = clienteEmpresaFound;
+      const dataManiesto = { pedidoManiestos, cliente, vehiculoFound, tenedorFound };
+      manifiestoEnd.push(dataManiesto);
+    }
+
+
+
 
 
     res.status(200).json(manifiestoEnd);
