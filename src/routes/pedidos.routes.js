@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validaCamposPedido } from '../middleware/validateCampos.js';
-import { crearPedido, aceptarPedido, rechazarPedido, verEstadoPedido, terminarPedido, calificacionPedido, verHistoriales } from '../controllers/pedido.controllers.js';
+import { crearPedido, aceptarPedido, rechazarPedido, verEstadoPedido, terminarPedido, calificacionPedido, verHistoriales, verManifiesto } from '../controllers/pedido.controllers.js';
 
 import multer from 'multer';
 import { storage } from '../middleware/cloudinary.js';
@@ -18,7 +18,8 @@ router.put("/rechazarPedido/:id", rechazarPedido);
 router.get("/verPedido", verEstadoPedido);
 router.put("/terminarPedido/:id", terminarPedido);
 router.put("/calificarPedido/:id", calificacionPedido);
-router.get("/verHistorales", verHistoriales)
+router.get("/verHistoriales", verHistoriales)
+router.get("/verManifiesto/:id", verManifiesto)
 
 
 export default router;

@@ -312,8 +312,19 @@ export const verManifiesto = async(req,res)=>{
   try {
     const { id } = req.params;
     const pedido = await Pedido.findById(id).populate("id_conductor");
-    console.log(pedido);
-    res.json("Example")
+    if(!pedido){
+      return res.status(400).json("No existen un pedido con los datos suministrados");
+    } 
+    const vehiculo = await Vehiculos.findOne({idConductorVeh: pedido.id_conductor._id});
+    if(!vehiculo){
+      return res.status(400).json("No existen un vehiculo con los datos suministrados");
+    }
+    const tenedor = await TenedorVehiculo.findOne({idVehiculoTE: vehiculo._id});
+    if(!tenedor){
+      return res.status(400).json("No existen un tenedor con los datos suministrados");
+    }
+    const manifiestoModel = {pedido, vehiculo, tenedor};
+    res.status(200).json(manifiestoModel)
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
