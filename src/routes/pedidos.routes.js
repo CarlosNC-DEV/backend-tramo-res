@@ -23,6 +23,4 @@ router.get("/verManifiesto/:id", verManifiesto);
 
 router.get("/notificacion/:id", dataPedido);
 
-
-
 export default router;

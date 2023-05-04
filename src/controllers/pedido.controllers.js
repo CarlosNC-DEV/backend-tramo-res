@@ -76,12 +76,13 @@ export const crearPedido = async (req, res) => {
 
     const conductorFound = await Conductores.findById(pedidoSave.id_conductor);
     const usuarioNatural = await ClienteNatural.findById(pedidoSave.id_usuario);
-    const { token_fbs } = conductorFound;
     if (usuarioNatural) {
       var tipo = "natural";
+      const { token_fbs } = conductorFound;
       notificacionPedido(token_fbs, usuarioNatural, pedidoSave, tipo);
     } else if (!usuarioNatural) {
       var tipo = "empresa";
+      const { token_fbs } = conductorFound;
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoSave.id_usuario
       );
@@ -123,16 +124,16 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         // tipo de datos para validacion
         tipo: "pedido",
         // usuario
-        imgPerfil: imgPerfilUsuario,
-        nombre: nombre,
+        imgPerfil: imgPerfilUsuario.toString(),
+        nombre: nombre.toString(),
         telefono: telefono.toString(),
         // pedido
         idPedido: pedidoSave._id.toString(),
-        imgPedido: pedidoSave.imagePedido.urlImg,
-        riegoCarga: pedidoSave.carga.riesgo,
+        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
+        riegoCarga: pedidoSave.carga.riesgo.toString(),
         cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
-        producto: pedidoSave.carga.producto,
-        cuidadoCarga: pedidoSave.carga.cuidadoCarga,
+        producto: pedidoSave.carga.producto.toString(),
+        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
 
         latitudInicial: pedidoSave.recogida.latitud.toString(),
         longitudInicial: pedidoSave.recogida.longitud.toString(),
