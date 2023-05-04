@@ -274,8 +274,7 @@ export const calificacionPedido = async (req, res) => {
 
 export const verHistoriales = async(req, res)=>{
   try {
-    
-    const pedidosManiestos = await Pedido.find({
+    const pedidosManifestos = await Pedido.find({
       "estado.enEspera": false,
       "estado.atendiendo": false,
       "estado.terminado": true,
@@ -284,22 +283,37 @@ export const verHistoriales = async(req, res)=>{
     }).populate("id_conductor");
 
     const historial = [];
-    await Promise.all(pedidosManiestos.map(async(pedido)=> {
-      const usuarioNatural = await ClienteNatural.findById(pedido.id_usuario);
-      const usuarioEmpresa = await ClienteEmpresa.findById(pedido.id_usuario);
+    await Promise.all(pedidosManifestos.map(async(pedidoManifesto) => {
+      const usuarioNatural = await ClienteNatural.findById(pedidoManifesto.id_usuario);
+      const usuarioEmpresa = await ClienteEmpresa.findById(pedidoManifesto.id_usuario);
       if(usuarioEmpresa){
-        let usuario = usuarioEmpresa
-        const usuarioPedido = { pedidosManiestos, usuario };
+        const usuarioPedido = { pedidoManifesto, usuario: usuarioEmpresa };
         historial.push(usuarioPedido);
-      }else if(usuarioNatural){
-        let usuario = usuarioNatural
-        const usuarioPedido = { pedidosManiestos, usuario };
+      } else if(usuarioNatural){
+        const usuarioPedido = { pedidoManifesto, usuario: usuarioNatural };
         historial.push(usuarioPedido);
       }
     }));
 
+    if(historial.length === 0){
+      return res.status(400).json("No existen pedidos")
+    }
+
     res.status(200).json(historial);
 
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
+
+
+export const verManifiesto = async(req,res)=>{
+  try {
+    const { id } = req.params;
+    const pedido = await Pedido.findById(id).populate("id_conductor");
+    console.log(pedido);
+    res.json("Example")
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");

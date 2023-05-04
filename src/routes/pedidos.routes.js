@@ -7,7 +7,7 @@ import { storage } from '../middleware/cloudinary.js';
 
 const upload = multer({
     storage: storage
-})
+});
 
 const router = Router()
 
