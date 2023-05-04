@@ -116,8 +116,8 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
 
     const message = {
       notification: {
-        title: "Título de la notificación",
-        body: "Cuerpo de la notificación",
+        title: "Nuevo pedido",
+        body: " !Tienes una nueva solicitud de pedido! ",
       },
       data: {
         // tipo de datos para validacion
