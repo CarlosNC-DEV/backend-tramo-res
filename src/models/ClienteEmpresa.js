@@ -19,6 +19,11 @@ const personaEmpresaSchema = new Schema(
       habilitadoPJU: { type: Boolean, default: true },
       motivoInhabilitadoPJU: { type: String, default: null },
     },
+
+    token_fbs:{
+      type: String,
+      default: null
+    },
   },
   {
     timestamps: true,

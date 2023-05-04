@@ -28,6 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(admin);
+
+// Inicios de sesión
 app.use(loginEmpresa);
 app.use(loginNatural);
 app.use(loginConductor);

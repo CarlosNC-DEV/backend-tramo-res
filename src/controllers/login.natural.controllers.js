@@ -43,3 +43,17 @@ export const authClienteNatural = async (req, res) => {
   }
 };
 
+export const updateAddTokenFSB = async(req, res)=>{
+  try {
+    const { id } = req.params;
+    const conductorActualizadoAddToken = await ClienteNatural.findByIdAndUpdate(id, req.body);
+    if(!conductorActualizadoAddToken){
+      return res.status(400).json("No se puedo agregar el token de firebase")
+    }
+    res.status(200).json("Token firebase agregado correctamente");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
+

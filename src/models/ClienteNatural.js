@@ -24,6 +24,12 @@ const personaNaturalSchema = new Schema(
       habilitadoPNA: { type: Boolean, default: true },
       motivoInhabilitadoPNA: { type: String, default: null },
     },
+
+    token_fbs:{
+      type: String,
+      default: null
+    },
+    
   },
   {
     timestamps: true,
