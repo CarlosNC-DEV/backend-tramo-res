@@ -87,7 +87,11 @@ export const crearPedido = async (req, res) => {
       );
       notificacionPedido(token_fbs, usuarioEmpresa, pedidoSave, tipo);
     }
-    res.status(200).json("Pedido en proceso de aceptación");
+    res.status(200).json({
+      id_pedido: pedidoSave._id,
+      messagge: "Pedido en proceso de aceptación"
+    });
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
@@ -328,10 +332,27 @@ export const verManifiesto = async(req,res)=>{
     if(!tenedor){
       return res.status(400).json("No existen un tenedor con los datos suministrados");
     }
-    const manifiestoModel = {pedido, vehiculo, propietario, tenedor};
-    res.status(200).json(manifiestoModel)
+    const usuarioNatural = await ClienteNatural.findById(pedido.id_usuario);
+    const usuarioEmpresa = await ClienteEmpresa.findById(pedido.id_usuario);
+    if(usuarioEmpresa){
+      var manifiestoModel = {pedido, vehiculo, propietario, tenedor, usuario: usuarioEmpresa };
+    }else if(usuarioNatural){
+      var manifiestoModel = {pedido, vehiculo, propietario, tenedor, usuario: usuarioNatural };
+    }
+    
+    res.status(200).json(manifiestoModel);
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
 }
+
+/**
+ * req.params
+ * Resivo el id del pedido
+ */
+// en caso de que el coductor o acepte la primera notificacion
+// crear controlador para recibir el id del pedido y extraer el token_fbs del conductor y mandarle una nueva notificacion
+// dev --> extraer data d eigual manera del pedido y se manda la misma notificacion nuevamente 
+
