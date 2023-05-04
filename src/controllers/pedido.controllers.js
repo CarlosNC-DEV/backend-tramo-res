@@ -5,6 +5,7 @@ import { CLIENTEMAIL_FBS, PRIVATEKEY_FBS, PROJECTID_FBS } from "../config.js";
 import Conductores from "../models/Conductores.js";
 import ClienteNatural from "../models/ClienteNatural.js";
 import ClienteEmpresa from "../models/ClienteEmpresa.js";
+import PropietarioVehiculos from "../models/PropietarioVehiculos.js";
 import TenedorVehiculo from "../models/TenedorVehiculo.js";
 import Vehiculos from "../models/Vehiculos.js";
 
@@ -319,11 +320,15 @@ export const verManifiesto = async(req,res)=>{
     if(!vehiculo){
       return res.status(400).json("No existen un vehiculo con los datos suministrados");
     }
+    const propietario = await PropietarioVehiculos.findOne({idVehiculoPRO: vehiculo._id});
+    if(!propietario){
+      return res.status(400).json("No existen un propietario con los datos suministrados");
+    }
     const tenedor = await TenedorVehiculo.findOne({idVehiculoTE: vehiculo._id});
     if(!tenedor){
       return res.status(400).json("No existen un tenedor con los datos suministrados");
     }
-    const manifiestoModel = {pedido, vehiculo, tenedor};
+    const manifiestoModel = {pedido, vehiculo, propietario, tenedor};
     res.status(200).json(manifiestoModel)
   } catch (error) {
     console.log(error);
