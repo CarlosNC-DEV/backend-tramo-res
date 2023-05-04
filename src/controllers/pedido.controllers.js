@@ -76,9 +76,9 @@ export const crearPedido = async (req, res) => {
 
     const conductorFound = await Conductores.findById(pedidoSave.id_conductor);
     const usuarioNatural = await ClienteNatural.findById(pedidoSave.id_usuario);
+    const { token_fbs } = conductorFound;
     if (usuarioNatural) {
       var tipo = "natural";
-      const { token_fbs } = conductorFound;
       notificacionPedido(token_fbs, usuarioNatural, pedidoSave, tipo);
     } else if (!usuarioNatural) {
       var tipo = "empresa";
@@ -312,7 +312,6 @@ export const verHistoriales = async(req, res)=>{
   }
 }
 
-
 export const verManifiesto = async(req,res)=>{
   try {
     const { id } = req.params;
@@ -348,11 +347,28 @@ export const verManifiesto = async(req,res)=>{
   }
 }
 
-/**
- * req.params
- * Resivo el id del pedido
- */
-// en caso de que el coductor o acepte la primera notificacion
-// crear controlador para recibir el id del pedido y extraer el token_fbs del conductor y mandarle una nueva notificacion
-// dev --> extraer data d eigual manera del pedido y se manda la misma notificacion nuevamente 
+export const dataPedido = async(req, res)=>{
+  try {
+    const { id } = req.params;
+    const pedidoFound = await Pedido.findById(id).populate("id_conductor");
+    const usuarioNatural = await ClienteNatural.findById(pedidoFound.id_usuario);
+    if (usuarioNatural) {
+      var tipo = "natural";
+      const { token_fbs } = pedidoFound.id_conductor;
+      notificacionPedido(token_fbs, usuarioNatural, pedidoFound, tipo);
+    } else if (!usuarioNatural) {
+      var tipo = "empresa";
+      const usuarioEmpresa = await ClienteEmpresa.findById(
+        pedidoFound.id_usuario
+      );
+      notificacionPedido(token_fbs, usuarioEmpresa, pedidoFound, tipo);
+    }
+    
+    res.status(200).json("Notificacion dos enviada");
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
 
