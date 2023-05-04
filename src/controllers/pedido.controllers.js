@@ -272,42 +272,33 @@ export const calificacionPedido = async (req, res) => {
   }
 };
 
-export const verManifiestos = async(req, res)=>{
+export const verHistoriales = async(req, res)=>{
   try {
     
-    const manifiestoEnd = [];
-
-    const pedidoManiestos = await Pedido.find({
+    const pedidosManiestos = await Pedido.find({
       "estado.enEspera": false,
       "estado.atendiendo": false,
       "estado.terminado": true,
       calificacionConductorPED: {$ne: null},
       calificacionServicioPED: {$ne: null}
-    }).populate("id_conductor").lean();
+    }).populate("id_conductor");
 
-    const idConductorFound = pedidoManiestos.map((res)=> res.id_conductor);
-    const vehiculoFound = await Vehiculos.findOne({idConductorVeh: idConductorFound});
-    const tenedorFound = await TenedorVehiculo.findOne({idVehiculoTE: vehiculoFound._id});
+    const historial = [];
+    await Promise.all(pedidosManiestos.map(async(pedido)=> {
+      const usuarioNatural = await ClienteNatural.findById(pedido.id_usuario);
+      const usuarioEmpresa = await ClienteEmpresa.findById(pedido.id_usuario);
+      if(usuarioEmpresa){
+        let usuario = usuarioEmpresa
+        const usuarioPedido = { pedidosManiestos, usuario };
+        historial.push(usuarioPedido);
+      }else if(usuarioNatural){
+        let usuario = usuarioNatural
+        const usuarioPedido = { pedidosManiestos, usuario };
+        historial.push(usuarioPedido);
+      }
+    }));
 
-    const idClienteFound = pedidoManiestos.map((res)=> res.id_usuario);
-    const clienteEmpresaFound = await ClienteEmpresa.findById(idClienteFound);
-    const clienteNaturalFound = await ClienteNatural.findById(idClienteFound);
-    
-    if(clienteNaturalFound){
-      let cliente = clienteNaturalFound;
-      const dataManiesto = { pedidoManiestos, cliente, vehiculoFound, tenedorFound };
-      manifiestoEnd.push(dataManiesto);
-    }else if(clienteEmpresaFound){
-      let cliente = clienteEmpresaFound;
-      const dataManiesto = { pedidoManiestos, cliente, vehiculoFound, tenedorFound };
-      manifiestoEnd.push(dataManiesto);
-    }
-
-
-
-
-
-    res.status(200).json(manifiestoEnd);
+    res.status(200).json(historial);
 
   } catch (error) {
     console.log(error);
