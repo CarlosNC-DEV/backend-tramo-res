@@ -25,6 +25,8 @@ export const validaCamposPedido = (req, res, next) => {
     metodoPago,
     id_usuario,
     id_conductor,
+    addressInicial,
+    addressFinal
   } = requestBody;
 
   if (
@@ -49,7 +51,9 @@ export const validaCamposPedido = (req, res, next) => {
     !costosViaje ||
     !metodoPago ||
     !id_usuario ||
-    !id_conductor
+    !id_conductor ||
+    !addressInicial ||
+    !addressFinal
   ) {
     return res.status(400).json("Todos los datos son requeridos");
   }

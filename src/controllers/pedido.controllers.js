@@ -406,6 +406,8 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
         longitudFinal: pedidoSave.destino.longitud.toString(),
 
         precioCarga: pedidoSave.costosViaje.toString(),
+        addressInicial: pedidoSave.addressInicial.toString(),
+        addressFinal: pedidoSave.addressFinal.toString(),
       },
       token: token_fbs,
     };

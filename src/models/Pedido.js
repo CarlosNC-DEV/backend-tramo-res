@@ -123,6 +123,12 @@ const schemaPedido = new Schema(
                 type: Boolean,
                 default: false
             }
+        },
+        addressInicial:{
+            type:String
+        },
+        addressFinal:{
+            type:String
         }
     },
     {
