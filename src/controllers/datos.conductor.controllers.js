@@ -11,8 +11,6 @@ export const conductoresHabilitados = async (req, res) => {
     const conductoresHabilitados = await Conductores.find({
       "estadoCON.IngresoCON": true,
       "estadoCON.habilitadoCON": true,
-      "estadoCON.conectadoCON": false,
-      "estadoCON.disponibilidadCON": false,
       motivoInhabilitadoCON: null,
       motivoRechazoCON: null,
     });
@@ -102,8 +100,6 @@ export const conductoresInhabilitados = async (req, res) => {
     const conductoresInhabilitados = await Conductores.find({
       "estadoCON.IngresoCON": true,
       "estadoCON.habilitadoCON": false,
-      "estadoCON.conectadoCON": false,
-      "estadoCON.disponibilidadCON": false,
       motivoInhabilitadoCON: { $ne: null },
       motivoRechazoCON: null,
     });
