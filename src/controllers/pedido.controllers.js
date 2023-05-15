@@ -99,61 +99,6 @@ export const crearPedido = async (req, res) => {
   }
 };
 
-const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
-  try {
-    var imgPerfilUsuario;
-    var nombre;
-    var telefono;
-    if (tipo === "natural") {
-      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-      nombre = usuario.nombrePNA;
-      telefono = usuario.nroTelefonoPNA;
-    } else if (tipo === "empresa") {
-      imgPerfilUsuario =
-        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-      nombre = usuario.nombreEmpresa;
-      telefono = usuario.nroTelefonoPJU;
-    }
-
-    const message = {
-      notification: {
-        title: "Nuevo pedido",
-        body: " !Tienes una nueva solicitud de pedido! ",
-      },
-      data: {
-        // tipo de datos para validacion
-        tipo: "pedido",
-        // usuario
-        imgPerfil: imgPerfilUsuario.toString(),
-        nombre: nombre.toString(),
-        telefono: telefono.toString(),
-        // pedido
-        idPedido: pedidoSave._id.toString(),
-        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
-        riegoCarga: pedidoSave.carga.riesgo.toString(),
-        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
-        producto: pedidoSave.carga.producto.toString(),
-        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
-
-        latitudInicial: pedidoSave.recogida.latitud.toString(),
-        longitudInicial: pedidoSave.recogida.longitud.toString(),
-
-        latitudFinal: pedidoSave.destino.latitud.toString(),
-        longitudFinal: pedidoSave.destino.longitud.toString(),
-
-        precioCarga: pedidoSave.costosViaje.toString(),
-      },
-      token: token_fbs,
-    };
-
-    const response = await admin.messaging().send(message);
-    console.log("Mensaje enviado:", response);
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
-
 export const aceptarPedido = async (req, res) => {
   try {
     const { id } = req.params;
@@ -372,4 +317,103 @@ export const dataPedido = async(req, res)=>{
     return res.status(500).json(" !Error en el servidor! ");
   }
 }
+/*
+  params id de conductor para actualizar y el id del pedido
+  busco el pedido correspondiente y le asigno el nuevo conductor y cambio su estado a en espera 
+  y mando la notificacion de pedido al nuevo condcutor correspondiente y la data requerida para dicha notificacion
+*/
+export const seleccionarNuevoConductor = async(req, res)=>{
+  try {
+    const { id_pedido } = req.params;
+    const { id_conductor } = req.params;
+    
+    const pedidoFound = await Pedido.findById(id_pedido).lean();
+    if(!pedidoFound){
+      return res.status(400).json("No existe un pedido relacionado con el id suministrado")
+    }
+    const updatePedido = await Pedido.findByIdAndUpdate(id_pedido, {
+      id_conductor: id_conductor,
+      "estado.enEspera": true,
+      "estado.atendiendo": false,
+      "estado.terminado": false
+    }, { new: true });
 
+    const conductorFound = await Conductores.findById(updatePedido.id_conductor);
+    const usuarioNatural = await ClienteNatural.findById(updatePedido.id_usuario);
+    if (usuarioNatural) {
+      var tipo = "natural";
+      const { token_fbs } = conductorFound;
+      notificacionPedido(token_fbs, usuarioNatural, updatePedido, tipo);
+    } else if (!usuarioNatural) {
+      var tipo = "empresa";
+      const { token_fbs } = conductorFound;
+      const usuarioEmpresa = await ClienteEmpresa.findById(
+        updatePedido.id_usuario
+      );
+      notificacionPedido(token_fbs, usuarioEmpresa, updatePedido, tipo);
+    }
+    res.status(200).json({
+      id_pedido: updatePedido._id,
+      messagge: "Pedido en proceso de aceptación"
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
+
+const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
+  try {
+    var imgPerfilUsuario;
+    var nombre;
+    var telefono;
+    if (tipo === "natural") {
+      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
+      nombre = usuario.nombrePNA;
+      telefono = usuario.nroTelefonoPNA;
+    } else if (tipo === "empresa") {
+      imgPerfilUsuario =
+        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+      nombre = usuario.nombreEmpresa;
+      telefono = usuario.nroTelefonoPJU;
+    }
+
+    const message = {
+      notification: {
+        title: "Nuevo pedido",
+        body: " !Tienes una nueva solicitud de pedido! ",
+      },
+      data: {
+        // tipo de datos para validacion
+        tipo: "pedido",
+        // usuario
+        imgPerfil: imgPerfilUsuario.toString(),
+        nombre: nombre.toString(),
+        telefono: telefono.toString(),
+        // pedido
+        idPedido: pedidoSave._id.toString(),
+        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
+        riegoCarga: pedidoSave.carga.riesgo.toString(),
+        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
+        producto: pedidoSave.carga.producto.toString(),
+        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+
+        latitudInicial: pedidoSave.recogida.latitud.toString(),
+        longitudInicial: pedidoSave.recogida.longitud.toString(),
+
+        latitudFinal: pedidoSave.destino.latitud.toString(),
+        longitudFinal: pedidoSave.destino.longitud.toString(),
+
+        precioCarga: pedidoSave.costosViaje.toString(),
+      },
+      token: token_fbs,
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log("Mensaje enviado:", response);
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
