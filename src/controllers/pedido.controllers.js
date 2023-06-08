@@ -76,6 +76,7 @@ export const crearPedido = async (req, res) => {
 
     const conductorFound = await Conductores.findById(pedidoSave.id_conductor);
     const usuarioNatural = await ClienteNatural.findById(pedidoSave.id_usuario);
+
     if (usuarioNatural) {
       const { token_fbs } = conductorFound;
 
@@ -118,6 +119,7 @@ export const crearPedido = async (req, res) => {
 
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
+
     } else if (!usuarioNatural) {
       const { token_fbs } = conductorFound;
       const usuarioEmpresa = await ClienteEmpresa.findById(
@@ -366,7 +368,7 @@ export const verHistoriales = async (req, res) => {
   try {
     const pedidosManifestos = await Pedido.find({
       "estado.enEspera": false,
-      "estado.atendiendo": false,
+      "estado.atendiendo": true,
       "estado.terminado": true,
       calificacionConductorPED: { $ne: null },
       calificacionServicioPED: { $ne: null },
