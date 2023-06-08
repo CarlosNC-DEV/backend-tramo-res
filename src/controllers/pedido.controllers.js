@@ -117,13 +117,45 @@ export const aceptarPedido = async (req, res) => {
     );
     if (usuarioNatural) {
       const { token_fbs } = usuarioNatural;
-      notificacionPedidoAceptado(token_fbs);
+      const message = {
+        notification: {
+          title: "TRAMO",
+          body: " !Tu Pedido a sido Aceptado! ",
+        },
+        token: token_fbs,
+      };
+  
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+  
+      if (response?.failureCount > 0) {
+        console.log("Estado del envío: Error");
+        notificacionPedidoAceptado(token_fbs)
+      } else {
+        console.log("Estado del envío: Éxito");
+      }
     } else if (!usuarioNatural) {
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoAceptado.id_usuario
       );
       const { token_fbs } = usuarioEmpresa;
-      notificacionPedidoAceptado(token_fbs);
+      const message = {
+        notification: {
+          title: "TRAMO",
+          body: " !Tu Pedido a sido Aceptado! ",
+        },
+        token: token_fbs,
+      };
+  
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+  
+      if (response?.failureCount > 0) {
+        console.log("Estado del envío: Error");
+        notificacionPedidoAceptado(token_fbs)
+      } else {
+        console.log("Estado del envío: Éxito");
+      }
     }
 
     res.status(200).json("Pedido aceptado");
