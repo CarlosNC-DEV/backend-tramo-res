@@ -628,14 +628,14 @@ export const seleccionarNuevoConductor = async (req, res) => {
     var nombre;
     var telefono;
     if (tipo === "natural") {
-      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-      nombre = usuario.nombrePNA;
-      telefono = usuario.nroTelefonoPNA;
+      imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
+      nombre = usuarioNatural.nombrePNA;
+      telefono = usuarioNatural.nroTelefonoPNA;
     } else if (tipo === "empresa") {
       imgPerfilUsuario =
         "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-      nombre = usuario.nombreEmpresa;
-      telefono = usuario.nroTelefonoPJU;
+      nombre = usuarioEmpresa.nombreEmpresa;
+      telefono = usuarioEmpresa.nroTelefonoPJU;
     }
 
     const message = {
