@@ -90,9 +90,8 @@ export const crearPedido = async (req, res) => {
     }
     res.status(200).json({
       id_pedido: pedidoSave._id,
-      messagge: "Pedido en proceso de aceptación"
+      messagge: "Pedido en proceso de aceptación",
     });
-
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
@@ -102,7 +101,7 @@ export const crearPedido = async (req, res) => {
 export const aceptarPedido = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const pedidoAceptado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": false,
       "estado.atendiendo": true,
@@ -113,7 +112,9 @@ export const aceptarPedido = async (req, res) => {
       return res.status(400).json("! No se pudo aceptar el pedido!");
     }
 
-    const usuarioNatural = await ClienteNatural.findById(pedidoAceptado.id_usuario);
+    const usuarioNatural = await ClienteNatural.findById(
+      pedidoAceptado.id_usuario
+    );
     if (usuarioNatural) {
       const { token_fbs } = usuarioNatural;
       notificacionPedidoAceptado(token_fbs);
@@ -123,23 +124,20 @@ export const aceptarPedido = async (req, res) => {
       );
       const { token_fbs } = usuarioEmpresa;
       notificacionPedidoAceptado(token_fbs);
-
     }
 
     res.status(200).json("Pedido aceptado");
-
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
 
-const notificacionPedidoAceptado = async(token_fbs)=>{
+const notificacionPedidoAceptado = async (token_fbs) => {
   try {
-
     const message = {
       notification: {
-        title: "Tu pedido",
+        title: "TRAMO",
         body: " !Tu Pedido a sido Aceptado! ",
       },
       token: token_fbs,
@@ -151,7 +149,7 @@ const notificacionPedidoAceptado = async(token_fbs)=>{
     console.log(error);
     return;
   }
-}
+};
 
 export const rechazarPedido = async (req, res) => {
   try {
@@ -253,81 +251,113 @@ export const calificacionPedido = async (req, res) => {
   }
 };
 
-export const verHistoriales = async(req, res)=>{
+export const verHistoriales = async (req, res) => {
   try {
     const pedidosManifestos = await Pedido.find({
       "estado.enEspera": false,
       "estado.atendiendo": false,
       "estado.terminado": true,
-      calificacionConductorPED: {$ne: null},
-      calificacionServicioPED: {$ne: null}
+      calificacionConductorPED: { $ne: null },
+      calificacionServicioPED: { $ne: null },
     }).populate("id_conductor");
 
     const historial = [];
-    await Promise.all(pedidosManifestos.map(async(pedidoManifesto) => {
-      const usuarioNatural = await ClienteNatural.findById(pedidoManifesto.id_usuario);
-      const usuarioEmpresa = await ClienteEmpresa.findById(pedidoManifesto.id_usuario);
-      if(usuarioEmpresa){
-        const usuarioPedido = { pedidoManifesto, usuario: usuarioEmpresa };
-        historial.push(usuarioPedido);
-      } else if(usuarioNatural){
-        const usuarioPedido = { pedidoManifesto, usuario: usuarioNatural };
-        historial.push(usuarioPedido);
-      }
-    }));
+    await Promise.all(
+      pedidosManifestos.map(async (pedidoManifesto) => {
+        const usuarioNatural = await ClienteNatural.findById(
+          pedidoManifesto.id_usuario
+        );
+        const usuarioEmpresa = await ClienteEmpresa.findById(
+          pedidoManifesto.id_usuario
+        );
+        if (usuarioEmpresa) {
+          const usuarioPedido = { pedidoManifesto, usuario: usuarioEmpresa };
+          historial.push(usuarioPedido);
+        } else if (usuarioNatural) {
+          const usuarioPedido = { pedidoManifesto, usuario: usuarioNatural };
+          historial.push(usuarioPedido);
+        }
+      })
+    );
 
-    if(historial.length === 0){
-      return res.status(400).json("No existen pedidos")
+    if (historial.length === 0) {
+      return res.status(400).json("No existen pedidos");
     }
 
     res.status(200).json(historial);
-
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
-}
+};
 
-export const verManifiesto = async(req,res)=>{
+export const verManifiesto = async (req, res) => {
   try {
     const { id } = req.params;
     const pedido = await Pedido.findById(id).populate("id_conductor");
-    if(!pedido){
-      return res.status(400).json("No existen un pedido con los datos suministrados");
-    } 
-    const vehiculo = await Vehiculos.findOne({idConductorVeh: pedido.id_conductor._id});
-    if(!vehiculo){
-      return res.status(400).json("No existen un vehiculo con los datos suministrados");
+    if (!pedido) {
+      return res
+        .status(400)
+        .json("No existen un pedido con los datos suministrados");
     }
-    const propietario = await PropietarioVehiculos.findOne({idVehiculoPRO: vehiculo._id});
-    if(!propietario){
-      return res.status(400).json("No existen un propietario con los datos suministrados");
+    const vehiculo = await Vehiculos.findOne({
+      idConductorVeh: pedido.id_conductor._id,
+    });
+    if (!vehiculo) {
+      return res
+        .status(400)
+        .json("No existen un vehiculo con los datos suministrados");
     }
-    const tenedor = await TenedorVehiculo.findOne({idVehiculoTE: vehiculo._id});
-    if(!tenedor){
-      return res.status(400).json("No existen un tenedor con los datos suministrados");
+    const propietario = await PropietarioVehiculos.findOne({
+      idVehiculoPRO: vehiculo._id,
+    });
+    if (!propietario) {
+      return res
+        .status(400)
+        .json("No existen un propietario con los datos suministrados");
+    }
+    const tenedor = await TenedorVehiculo.findOne({
+      idVehiculoTE: vehiculo._id,
+    });
+    if (!tenedor) {
+      return res
+        .status(400)
+        .json("No existen un tenedor con los datos suministrados");
     }
     const usuarioNatural = await ClienteNatural.findById(pedido.id_usuario);
     const usuarioEmpresa = await ClienteEmpresa.findById(pedido.id_usuario);
-    if(usuarioEmpresa){
-      var manifiestoModel = {pedido, vehiculo, propietario, tenedor, usuario: usuarioEmpresa };
-    }else if(usuarioNatural){
-      var manifiestoModel = {pedido, vehiculo, propietario, tenedor, usuario: usuarioNatural };
+    if (usuarioEmpresa) {
+      var manifiestoModel = {
+        pedido,
+        vehiculo,
+        propietario,
+        tenedor,
+        usuario: usuarioEmpresa,
+      };
+    } else if (usuarioNatural) {
+      var manifiestoModel = {
+        pedido,
+        vehiculo,
+        propietario,
+        tenedor,
+        usuario: usuarioNatural,
+      };
     }
-    
-    res.status(200).json(manifiestoModel);
 
+    res.status(200).json(manifiestoModel);
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
-}
+};
 
-export const dataPedido = async(req, res)=>{
+export const dataPedido = async (req, res) => {
   try {
     const { id } = req.params;
     const pedidoFound = await Pedido.findById(id).populate("id_conductor");
-    const usuarioNatural = await ClienteNatural.findById(pedidoFound.id_usuario);
+    const usuarioNatural = await ClienteNatural.findById(
+      pedidoFound.id_usuario
+    );
     if (usuarioNatural) {
       var tipo = "natural";
       const { token_fbs } = pedidoFound.id_conductor;
@@ -339,37 +369,46 @@ export const dataPedido = async(req, res)=>{
       );
       notificacionPedido(token_fbs, usuarioEmpresa, pedidoFound, tipo);
     }
-    
-    res.status(200).json("Notificacion dos enviada");
 
+    res.status(200).json("Notificacion dos enviada");
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
-}
+};
 /*
   params id de conductor para actualizar y el id del pedido
   busco el pedido correspondiente y le asigno el nuevo conductor y cambio su estado a en espera 
   y mando la notificacion de pedido al nuevo condcutor correspondiente y la data requerida para dicha notificacion
 */
-export const seleccionarNuevoConductor = async(req, res)=>{
+export const seleccionarNuevoConductor = async (req, res) => {
   try {
     const { id_pedido } = req.params;
     const { id_conductor } = req.params;
-    
-    const pedidoFound = await Pedido.findById(id_pedido).lean();
-    if(!pedidoFound){
-      return res.status(400).json("No existe un pedido relacionado con el id suministrado")
-    }
-    const updatePedido = await Pedido.findByIdAndUpdate(id_pedido, {
-      id_conductor: id_conductor,
-      "estado.enEspera": true,
-      "estado.atendiendo": false,
-      "estado.terminado": false
-    }, { new: true });
 
-    const conductorFound = await Conductores.findById(updatePedido.id_conductor);
-    const usuarioNatural = await ClienteNatural.findById(updatePedido.id_usuario);
+    const pedidoFound = await Pedido.findById(id_pedido).lean();
+    if (!pedidoFound) {
+      return res
+        .status(400)
+        .json("No existe un pedido relacionado con el id suministrado");
+    }
+    const updatePedido = await Pedido.findByIdAndUpdate(
+      id_pedido,
+      {
+        id_conductor: id_conductor,
+        "estado.enEspera": true,
+        "estado.atendiendo": false,
+        "estado.terminado": false,
+      },
+      { new: true }
+    );
+
+    const conductorFound = await Conductores.findById(
+      updatePedido.id_conductor
+    );
+    const usuarioNatural = await ClienteNatural.findById(
+      updatePedido.id_usuario
+    );
     if (usuarioNatural) {
       var tipo = "natural";
       const { token_fbs } = conductorFound;
@@ -384,87 +423,89 @@ export const seleccionarNuevoConductor = async(req, res)=>{
     }
     res.status(200).json({
       id_pedido: updatePedido._id,
-      messagge: "Pedido en proceso de aceptación"
+      messagge: "Pedido en proceso de aceptación",
     });
-
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
-  }
-}
-
-const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
-  try {
-    var imgPerfilUsuario;
-    var nombre;
-    var telefono;
-    if (tipo === "natural") {
-      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-      nombre = usuario.nombrePNA;
-      telefono = usuario.nroTelefonoPNA;
-    } else if (tipo === "empresa") {
-      imgPerfilUsuario =
-        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-      nombre = usuario.nombreEmpresa;
-      telefono = usuario.nroTelefonoPJU;
-    }
-
-    const message = {
-      notification: {
-        title: "Nuevo pedido",
-        body: " !Tienes una nueva solicitud de pedido! ",
-      },
-      data: {
-        // tipo de datos para validacion
-        tipo: "pedido",
-        // usuario
-        imgPerfil: imgPerfilUsuario.toString(),
-        nombre: nombre.toString(),
-        telefono: telefono.toString(),
-        // pedido
-        idPedido: pedidoSave._id.toString(),
-        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
-        riegoCarga: pedidoSave.carga.riesgo.toString(),
-        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
-        producto: pedidoSave.carga.producto.toString(),
-        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
-
-        latitudInicial: pedidoSave.recogida.latitud.toString(),
-        longitudInicial: pedidoSave.recogida.longitud.toString(),
-
-        latitudFinal: pedidoSave.destino.latitud.toString(),
-        longitudFinal: pedidoSave.destino.longitud.toString(),
-
-        precioCarga: pedidoSave.costosViaje.toString(),
-        addressInicial: pedidoSave.addressInicial.toString(),
-        addressFinal: pedidoSave.addressFinal.toString(),
-      },
-      token: token_fbs,
-    };
-
-    const response = await admin.messaging().send(message);
-    console.log("Mensaje enviado:", response);
-  } catch (error) {
-    console.log(error);
-    return;
   }
 };
 
-export const pedidoConductores = async(req, res)=>{
-  try {
+const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
+  let mensajeEnviado = false;
+  while (!mensajeEnviado) {
+    try {
+      var imgPerfilUsuario;
+      var nombre;
+      var telefono;
+      if (tipo === "natural") {
+        imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
+        nombre = usuario.nombrePNA;
+        telefono = usuario.nroTelefonoPNA;
+      } else if (tipo === "empresa") {
+        imgPerfilUsuario =
+          "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+        nombre = usuario.nombreEmpresa;
+        telefono = usuario.nroTelefonoPJU;
+      }
 
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoSave._id.toString(),
+          imgPedido: pedidoSave.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoSave.carga.riesgo.toString(),
+          cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
+          producto: pedidoSave.carga.producto.toString(),
+          cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+
+          latitudInicial: pedidoSave.recogida.latitud.toString(),
+          longitudInicial: pedidoSave.recogida.longitud.toString(),
+
+          latitudFinal: pedidoSave.destino.latitud.toString(),
+          longitudFinal: pedidoSave.destino.longitud.toString(),
+
+          precioCarga: pedidoSave.costosViaje.toString(),
+          addressInicial: pedidoSave.addressInicial.toString(),
+          addressFinal: pedidoSave.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+      mensajeEnviado = true;
+    } catch (error) {
+      console.log(error);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }
+};
+
+export const pedidoConductores = async (req, res) => {
+  try {
     const { id } = req.params;
 
     const pedidos = await Pedido.find({
-      id_conductor: id, 
-      "estado.enEspera": false, 
-      "estado.atendiendo": false, 
-      "estado.terminado": true }).lean()
+      id_conductor: id,
+      "estado.enEspera": false,
+      "estado.atendiendo": false,
+      "estado.terminado": true,
+    }).lean();
 
-    res.status(200).json(pedidos)
-
+    res.status(200).json(pedidos);
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
-} 
+};
