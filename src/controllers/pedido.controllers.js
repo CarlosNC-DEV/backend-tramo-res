@@ -79,15 +79,126 @@ export const crearPedido = async (req, res) => {
     if (usuarioNatural) {
       var tipo = "natural";
       const { token_fbs } = conductorFound;
-      notificacionPedido(token_fbs, usuarioNatural, pedidoSave, tipo);
+      var imgPerfilUsuario;
+      var nombre;
+      var telefono;
+      if (tipo === "natural") {
+        imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
+        nombre = usuario.nombrePNA;
+        telefono = usuario.nroTelefonoPNA;
+      } else if (tipo === "empresa") {
+        imgPerfilUsuario =
+          "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+        nombre = usuario.nombreEmpresa;
+        telefono = usuario.nroTelefonoPJU;
+      }
+
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoSave._id.toString(),
+          imgPedido: pedidoSave.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoSave.carga.riesgo.toString(),
+          cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
+          producto: pedidoSave.carga.producto.toString(),
+          cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+
+          latitudInicial: pedidoSave.recogida.latitud.toString(),
+          longitudInicial: pedidoSave.recogida.longitud.toString(),
+
+          latitudFinal: pedidoSave.destino.latitud.toString(),
+          longitudFinal: pedidoSave.destino.longitud.toString(),
+
+          precioCarga: pedidoSave.costosViaje.toString(),
+          addressInicial: pedidoSave.addressInicial.toString(),
+          addressFinal: pedidoSave.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+      if (response?.failureCount > 0) {
+        console.log("Estado del envío: Error");
+        notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
+      } else {
+        console.log("Estado del envío: Éxito");
+      }
     } else if (!usuarioNatural) {
       var tipo = "empresa";
       const { token_fbs } = conductorFound;
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoSave.id_usuario
       );
-      notificacionPedido(token_fbs, usuarioEmpresa, pedidoSave, tipo);
+      var imgPerfilUsuario;
+      var nombre;
+      var telefono;
+      if (tipo === "natural") {
+        imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
+        nombre = usuario.nombrePNA;
+        telefono = usuario.nroTelefonoPNA;
+      } else if (tipo === "empresa") {
+        imgPerfilUsuario =
+          "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+        nombre = usuario.nombreEmpresa;
+        telefono = usuario.nroTelefonoPJU;
+      }
+
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoSave._id.toString(),
+          imgPedido: pedidoSave.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoSave.carga.riesgo.toString(),
+          cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
+          producto: pedidoSave.carga.producto.toString(),
+          cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+
+          latitudInicial: pedidoSave.recogida.latitud.toString(),
+          longitudInicial: pedidoSave.recogida.longitud.toString(),
+
+          latitudFinal: pedidoSave.destino.latitud.toString(),
+          longitudFinal: pedidoSave.destino.longitud.toString(),
+
+          precioCarga: pedidoSave.costosViaje.toString(),
+          addressInicial: pedidoSave.addressInicial.toString(),
+          addressFinal: pedidoSave.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+      if (response?.failureCount > 0) {
+        console.log("Estado del envío: Error");
+        notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
+      } else {
+        console.log("Estado del envío: Éxito");
+      }
     }
+    
     res.status(200).json({
       id_pedido: pedidoSave._id,
       messagge: "Pedido en proceso de aceptación",
@@ -124,13 +235,13 @@ export const aceptarPedido = async (req, res) => {
         },
         token: token_fbs,
       };
-  
+
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
-  
+
       if (response?.failureCount > 0) {
         console.log("Estado del envío: Error");
-        notificacionPedidoAceptado(token_fbs)
+        notificacionPedidoAceptado(token_fbs);
       } else {
         console.log("Estado del envío: Éxito");
       }
@@ -146,13 +257,13 @@ export const aceptarPedido = async (req, res) => {
         },
         token: token_fbs,
       };
-  
+
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
-  
+
       if (response?.failureCount > 0) {
         console.log("Estado del envío: Error");
-        notificacionPedidoAceptado(token_fbs)
+        notificacionPedidoAceptado(token_fbs);
       } else {
         console.log("Estado del envío: Éxito");
       }
@@ -164,8 +275,6 @@ export const aceptarPedido = async (req, res) => {
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
-
-
 
 const notificacionPedidoAceptado = async (token_fbs) => {
   try {
@@ -182,11 +291,10 @@ const notificacionPedidoAceptado = async (token_fbs) => {
 
     if (response?.failureCount > 0) {
       console.log("Estado del envío: Error");
-      notificacionPedidoAceptado(token_fbs)
+      notificacionPedidoAceptado(token_fbs);
     } else {
       console.log("Estado del envío: Éxito");
     }
-
   } catch (error) {
     console.log(error);
     return;
@@ -527,11 +635,10 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
 
     if (response?.failureCount > 0) {
       console.log("Estado del envío: Error");
-      notificacionPedido(token_fbs, usuario, pedidoSave, tipo)
+      notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
     } else {
       console.log("Estado del envío: Éxito");
     }
-
   } catch (error) {
     console.log(error);
     return res.status(500).json("Error en el servidor");
