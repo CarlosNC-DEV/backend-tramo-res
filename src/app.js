@@ -22,6 +22,9 @@ import pedidos from './routes/pedidos.routes.js';
 
 import homeempresa from './routes/home.empresa.routes.js';
 
+//Web And Movile
+import pqrs from './routes/pqrs.routes.js';
+
 const app = express();
 
 app.use(cors());
@@ -48,5 +51,6 @@ app.use(homenatural);
 app.use("/natural", pedidos);
 
 app.use(homeempresa)
+app.use(pqrs)
 
 export default app;

@@ -102,10 +102,7 @@ export const crearPedido = async (req, res) => {
 export const aceptarPedido = async (req, res) => {
   try {
     const { id } = req.params;
-    const pedidoFound = await Pedido.findById(id).lean();
-    if (pedidoFound.estado.atendiendo === true) {
-      return res.status(400).json("El pedido ya a sido aceptado");
-    }
+    
     const pedidoAceptado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": false,
       "estado.atendiendo": true,
@@ -116,12 +113,45 @@ export const aceptarPedido = async (req, res) => {
       return res.status(400).json("! No se pudo aceptar el pedido!");
     }
 
+    const usuarioNatural = await ClienteNatural.findById(pedidoAceptado.id_usuario);
+    if (usuarioNatural) {
+      const { token_fbs } = usuarioNatural;
+      notificacionPedidoAceptado(token_fbs);
+    } else if (!usuarioNatural) {
+      const usuarioEmpresa = await ClienteEmpresa.findById(
+        pedidoAceptado.id_usuario
+      );
+      const { token_fbs } = usuarioEmpresa;
+      notificacionPedidoAceptado(token_fbs);
+
+    }
+
     res.status(200).json("Pedido aceptado");
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
+
+const notificacionPedidoAceptado = async(token_fbs)=>{
+  try {
+
+    const message = {
+      notification: {
+        title: "Tu pedido",
+        body: " !Tu Pedido a sido Aceptado! ",
+      },
+      token: token_fbs,
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log("Mensaje enviado:", response);
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
 
 export const rechazarPedido = async (req, res) => {
   try {
@@ -419,3 +449,22 @@ const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
     return;
   }
 };
+
+export const pedidoConductores = async(req, res)=>{
+  try {
+
+    const { id } = req.params;
+
+    const pedidos = await Pedido.find({
+      id_conductor: id, 
+      "estado.enEspera": false, 
+      "estado.atendiendo": false, 
+      "estado.terminado": true }).lean()
+
+    res.status(200).json(pedidos)
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+} 
