@@ -367,9 +367,7 @@ export const calificacionPedido = async (req, res) => {
 export const verHistoriales = async (req, res) => {
   try {
     const pedidosManifestos = await Pedido.find({
-      "estado.enEspera": false,
-      calificacionConductorPED: { $ne: null },
-      calificacionServicioPED: { $ne: null },
+      "estado.enEspera": false
     }).populate("id_conductor");
 
     const historial = [];
