@@ -20,11 +20,8 @@ router.put("/terminarPedido/:id", terminarPedido);
 router.put("/calificarPedido/:id", calificacionPedido);
 router.get("/verHistoriales", verHistoriales);
 router.get("/verManifiesto/:id", verManifiesto);
-
 router.get("/notificacion/:id", dataPedido);
-
 router.put("/newPedido/:id_pedido/:id_conductor", seleccionarNuevoConductor);
-
 router.get("/verMisPedidos/:id", pedidoConductores)
 
 export default router;

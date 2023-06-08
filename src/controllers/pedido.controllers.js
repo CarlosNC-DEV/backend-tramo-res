@@ -77,7 +77,6 @@ export const crearPedido = async (req, res) => {
     const conductorFound = await Conductores.findById(pedidoSave.id_conductor);
     const usuarioNatural = await ClienteNatural.findById(pedidoSave.id_usuario);
     if (usuarioNatural) {
-
       const { token_fbs } = conductorFound;
 
       var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
@@ -119,17 +118,15 @@ export const crearPedido = async (req, res) => {
 
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
-
     } else if (!usuarioNatural) {
-
       const { token_fbs } = conductorFound;
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoSave.id_usuario
       );
       var nombre = usuarioEmpresa.nombreEmpresa;
       var telefono = usuarioEmpresa.nroTelefonoPJU;
-      var  imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-  
+      var imgPerfilUsuario =
+        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
 
       const message = {
         notification: {
@@ -208,12 +205,6 @@ export const aceptarPedido = async (req, res) => {
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
 
-      if (response?.failureCount > 0) {
-        console.log("Estado del envío: Error");
-        notificacionPedidoAceptado(token_fbs);
-      } else {
-        console.log("Estado del envío: Éxito");
-      }
     } else if (!usuarioNatural) {
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoAceptado.id_usuario
@@ -229,44 +220,12 @@ export const aceptarPedido = async (req, res) => {
 
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
-
-      if (response?.failureCount > 0) {
-        console.log("Estado del envío: Error");
-        notificacionPedidoAceptado(token_fbs);
-      } else {
-        console.log("Estado del envío: Éxito");
-      }
     }
 
     res.status(200).json("Pedido aceptado");
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
-  }
-};
-
-const notificacionPedidoAceptado = async (token_fbs) => {
-  try {
-    const message = {
-      notification: {
-        title: "TRAMO",
-        body: " !Tu Pedido a sido Aceptado! ",
-      },
-      token: token_fbs,
-    };
-
-    const response = await admin.messaging().send(message);
-    console.log("Mensaje enviado:", response);
-
-    if (response?.failureCount > 0) {
-      console.log("Estado del envío: Error");
-      notificacionPedidoAceptado(token_fbs);
-    } else {
-      console.log("Estado del envío: Éxito");
-    }
-  } catch (error) {
-    console.log(error);
-    return;
   }
 };
 
@@ -282,6 +241,39 @@ export const rechazarPedido = async (req, res) => {
 
     if (!pedidoRechazado) {
       return res.status(400).json("! No se pudo rechazar el pedido!");
+    }
+
+    const usuarioNatural = await ClienteNatural.findById(
+      pedidoRechazado.id_usuario
+    );
+    if (usuarioNatural) {
+      const { token_fbs } = usuarioNatural;
+      const message = {
+        notification: {
+          title: "TRAMO",
+          body: " !Tu Pedido a sido Rechazado! ",
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+      
+    } else if (!usuarioNatural) {
+      const usuarioEmpresa = await ClienteEmpresa.findById(
+        pedidoRechazado.id_usuario
+      );
+      const { token_fbs } = usuarioEmpresa;
+      const message = {
+        notification: {
+          title: "TRAMO",
+          body: " !Tu Pedido a sido Rechazado! ",
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
     }
 
     res.status(200).json("Pedido Rechazado");
@@ -477,16 +469,94 @@ export const dataPedido = async (req, res) => {
     const usuarioNatural = await ClienteNatural.findById(
       pedidoFound.id_usuario
     );
+
+    const { token_fbs } = pedidoFound.id_conductor;
+
     if (usuarioNatural) {
-      var tipo = "natural";
-      const { token_fbs } = pedidoFound.id_conductor;
-      notificacionPedido(token_fbs, usuarioNatural, pedidoFound, tipo);
+      var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
+      var nombre = usuarioNatural.nombrePNA;
+      var telefono = usuarioNatural.nroTelefonoPNA;
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoFound._id.toString(),
+          imgPedido: pedidoFound.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoFound.carga.riesgo.toString(),
+          cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
+          producto: pedidoFound.carga.producto.toString(),
+          cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
+
+          latitudInicial: pedidoFound.recogida.latitud.toString(),
+          longitudInicial: pedidoFound.recogida.longitud.toString(),
+
+          latitudFinal: pedidoFound.destino.latitud.toString(),
+          longitudFinal: pedidoFound.destino.longitud.toString(),
+
+          precioCarga: pedidoFound.costosViaje.toString(),
+          addressInicial: pedidoFound.addressInicial.toString(),
+          addressFinal: pedidoFound.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
     } else if (!usuarioNatural) {
-      var tipo = "empresa";
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoFound.id_usuario
       );
-      notificacionPedido(token_fbs, usuarioEmpresa, pedidoFound, tipo);
+
+      var imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+      var nombre = usuarioEmpresa.nombreEmpresa;
+      var telefono = usuarioEmpresa.nroTelefonoPJU;
+
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoFound._id.toString(),
+          imgPedido: pedidoFound.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoFound.carga.riesgo.toString(),
+          cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
+          producto: pedidoFound.carga.producto.toString(),
+          cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
+
+          latitudInicial: pedidoFound.recogida.latitud.toString(),
+          longitudInicial: pedidoFound.recogida.longitud.toString(),
+
+          latitudFinal: pedidoFound.destino.latitud.toString(),
+          longitudFinal: pedidoFound.destino.longitud.toString(),
+
+          precioCarga: pedidoFound.costosViaje.toString(),
+          addressInicial: pedidoFound.addressInicial.toString(),
+          addressFinal: pedidoFound.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
     }
 
     res.status(200).json("Notificacion dos enviada");
@@ -495,6 +565,7 @@ export const dataPedido = async (req, res) => {
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
+
 /*
   params id de conductor para actualizar y el id del pedido
   busco el pedido correspondiente y le asigno el nuevo conductor y cambio su estado a en espera 
@@ -529,126 +600,93 @@ export const seleccionarNuevoConductor = async (req, res) => {
       updatePedido.id_usuario
     );
     if (usuarioNatural) {
-      var tipo = "natural";
       const { token_fbs } = conductorFound;
-      var imgPerfilUsuario;
-    var nombre;
-    var telefono;
-    if (tipo === "natural") {
-      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-      nombre = usuario.nombrePNA;
-      telefono = usuario.nroTelefonoPNA;
-    } else if (tipo === "empresa") {
-      imgPerfilUsuario =
-        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-      nombre = usuario.nombreEmpresa;
-      telefono = usuario.nroTelefonoPJU;
-    }
+      var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
+      var nombre = usuarioNatural.nombrePNA;
+      var telefono = usuarioNatural.nroTelefonoPNA;
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoFound._id.toString(),
+          imgPedido: pedidoFound.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoFound.carga.riesgo.toString(),
+          cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
+          producto: pedidoFound.carga.producto.toString(),
+          cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
 
-    const message = {
-      notification: {
-        title: "Nuevo pedido",
-        body: " !Tienes una nueva solicitud de pedido! ",
-      },
-      data: {
-        // tipo de datos para validacion
-        tipo: "pedido",
-        // usuario
-        imgPerfil: imgPerfilUsuario.toString(),
-        nombre: nombre.toString(),
-        telefono: telefono.toString(),
-        // pedido
-        idPedido: pedidoSave._id.toString(),
-        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
-        riegoCarga: pedidoSave.carga.riesgo.toString(),
-        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
-        producto: pedidoSave.carga.producto.toString(),
-        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+          latitudInicial: pedidoFound.recogida.latitud.toString(),
+          longitudInicial: pedidoFound.recogida.longitud.toString(),
 
-        latitudInicial: pedidoSave.recogida.latitud.toString(),
-        longitudInicial: pedidoSave.recogida.longitud.toString(),
+          latitudFinal: pedidoFound.destino.latitud.toString(),
+          longitudFinal: pedidoFound.destino.longitud.toString(),
 
-        latitudFinal: pedidoSave.destino.latitud.toString(),
-        longitudFinal: pedidoSave.destino.longitud.toString(),
+          precioCarga: pedidoFound.costosViaje.toString(),
+          addressInicial: pedidoFound.addressInicial.toString(),
+          addressFinal: pedidoFound.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
 
-        precioCarga: pedidoSave.costosViaje.toString(),
-        addressInicial: pedidoSave.addressInicial.toString(),
-        addressFinal: pedidoSave.addressFinal.toString(),
-      },
-      token: token_fbs,
-    };
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
 
-    const response = await admin.messaging().send(message);
-    console.log("Mensaje enviado:", response);
-
-    if (response?.failureCount > 0) {
-      console.log("Estado del envío: Error");
-      notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
-    } else {
-      console.log("Estado del envío: Éxito");
-    }
     } else if (!usuarioNatural) {
-      var tipo = "empresa";
+
       const { token_fbs } = conductorFound;
       const usuarioEmpresa = await ClienteEmpresa.findById(
         updatePedido.id_usuario
       );
-      var imgPerfilUsuario;
-    var nombre;
-    var telefono;
-    if (tipo === "natural") {
-      imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
-      nombre = usuarioNatural.nombrePNA;
-      telefono = usuarioNatural.nroTelefonoPNA;
-    } else if (tipo === "empresa") {
-      imgPerfilUsuario =
-        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-      nombre = usuarioEmpresa.nombreEmpresa;
-      telefono = usuarioEmpresa.nroTelefonoPJU;
-    }
 
-    const message = {
-      notification: {
-        title: "Nuevo pedido",
-        body: " !Tienes una nueva solicitud de pedido! ",
-      },
-      data: {
-        // tipo de datos para validacion
-        tipo: "pedido",
-        // usuario
-        imgPerfil: imgPerfilUsuario.toString(),
-        nombre: nombre.toString(),
-        telefono: telefono.toString(),
-        // pedido
-        idPedido: pedidoSave._id.toString(),
-        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
-        riegoCarga: pedidoSave.carga.riesgo.toString(),
-        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
-        producto: pedidoSave.carga.producto.toString(),
-        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+      var imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+      var nombre = usuarioEmpresa.nombreEmpresa;
+      var telefono = usuarioEmpresa.nroTelefonoPJU;
 
-        latitudInicial: pedidoSave.recogida.latitud.toString(),
-        longitudInicial: pedidoSave.recogida.longitud.toString(),
+      const message = {
+        notification: {
+          title: "Nuevo pedido",
+          body: " !Tienes una nueva solicitud de pedido! ",
+        },
+        data: {
+          // tipo de datos para validacion
+          tipo: "pedido",
+          // usuario
+          imgPerfil: imgPerfilUsuario.toString(),
+          nombre: nombre.toString(),
+          telefono: telefono.toString(),
+          // pedido
+          idPedido: pedidoFound._id.toString(),
+          imgPedido: pedidoFound.imagePedido.urlImg.toString(),
+          riegoCarga: pedidoFound.carga.riesgo.toString(),
+          cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
+          producto: pedidoFound.carga.producto.toString(),
+          cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
 
-        latitudFinal: pedidoSave.destino.latitud.toString(),
-        longitudFinal: pedidoSave.destino.longitud.toString(),
+          latitudInicial: pedidoFound.recogida.latitud.toString(),
+          longitudInicial: pedidoFound.recogida.longitud.toString(),
 
-        precioCarga: pedidoSave.costosViaje.toString(),
-        addressInicial: pedidoSave.addressInicial.toString(),
-        addressFinal: pedidoSave.addressFinal.toString(),
-      },
-      token: token_fbs,
-    };
+          latitudFinal: pedidoFound.destino.latitud.toString(),
+          longitudFinal: pedidoFound.destino.longitud.toString(),
 
-    const response = await admin.messaging().send(message);
-    console.log("Mensaje enviado:", response);
+          precioCarga: pedidoFound.costosViaje.toString(),
+          addressInicial: pedidoFound.addressInicial.toString(),
+          addressFinal: pedidoFound.addressFinal.toString(),
+        },
+        token: token_fbs,
+      };
 
-    if (response?.failureCount > 0) {
-      console.log("Estado del envío: Error");
-      notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
-    } else {
-      console.log("Estado del envío: Éxito");
-    }
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
     }
     res.status(200).json({
       id_pedido: updatePedido._id,
@@ -660,69 +698,6 @@ export const seleccionarNuevoConductor = async (req, res) => {
   }
 };
 
-const notificacionPedido = async (token_fbs, usuario, pedidoSave, tipo) => {
-  try {
-    var imgPerfilUsuario;
-    var nombre;
-    var telefono;
-    if (tipo === "natural") {
-      imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-      nombre = usuario.nombrePNA;
-      telefono = usuario.nroTelefonoPNA;
-    } else if (tipo === "empresa") {
-      imgPerfilUsuario =
-        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-      nombre = usuario.nombreEmpresa;
-      telefono = usuario.nroTelefonoPJU;
-    }
-
-    const message = {
-      notification: {
-        title: "Nuevo pedido",
-        body: " !Tienes una nueva solicitud de pedido! ",
-      },
-      data: {
-        // tipo de datos para validacion
-        tipo: "pedido",
-        // usuario
-        imgPerfil: imgPerfilUsuario.toString(),
-        nombre: nombre.toString(),
-        telefono: telefono.toString(),
-        // pedido
-        idPedido: pedidoSave._id.toString(),
-        imgPedido: pedidoSave.imagePedido.urlImg.toString(),
-        riegoCarga: pedidoSave.carga.riesgo.toString(),
-        cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
-        producto: pedidoSave.carga.producto.toString(),
-        cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
-
-        latitudInicial: pedidoSave.recogida.latitud.toString(),
-        longitudInicial: pedidoSave.recogida.longitud.toString(),
-
-        latitudFinal: pedidoSave.destino.latitud.toString(),
-        longitudFinal: pedidoSave.destino.longitud.toString(),
-
-        precioCarga: pedidoSave.costosViaje.toString(),
-        addressInicial: pedidoSave.addressInicial.toString(),
-        addressFinal: pedidoSave.addressFinal.toString(),
-      },
-      token: token_fbs,
-    };
-
-    const response = await admin.messaging().send(message);
-    console.log("Mensaje enviado:", response);
-
-    if (response?.failureCount > 0) {
-      console.log("Estado del envío: Error");
-      notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
-    } else {
-      console.log("Estado del envío: Éxito");
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json("Error en el servidor");
-  }
-};
 
 export const pedidoConductores = async (req, res) => {
   try {
