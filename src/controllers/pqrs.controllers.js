@@ -13,12 +13,12 @@ export const verPqrs = async(req, res)=>{
 
 export const crearPqrs = async(req, res)=>{
     try {
-        const { tipo, motivo, respuesta, id_usuario} = req.body
-        if(!tipo || !motivo || !respuesta || !id_usuario){
+        const { tipo, motivo, id_usuario } = req.body
+        if(!tipo || !motivo || !id_usuario){
             return res.status(400).json("Todos los datos son requeridos")
         }
         const pqrsModel = new Pqrs(req.body)
-        pqrsModel.save()
+        await pqrsModel.save()
 
         res.status(200).json("Pqrs Creada");
 
