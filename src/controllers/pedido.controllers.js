@@ -368,8 +368,6 @@ export const verHistoriales = async (req, res) => {
   try {
     const pedidosManifestos = await Pedido.find({
       "estado.enEspera": false,
-      "estado.atendiendo": true,
-      "estado.terminado": true,
       calificacionConductorPED: { $ne: null },
       calificacionServicioPED: { $ne: null },
     }).populate("id_conductor");
