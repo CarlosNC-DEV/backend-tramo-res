@@ -77,21 +77,12 @@ export const crearPedido = async (req, res) => {
     const conductorFound = await Conductores.findById(pedidoSave.id_conductor);
     const usuarioNatural = await ClienteNatural.findById(pedidoSave.id_usuario);
     if (usuarioNatural) {
-      var tipo = "natural";
+
       const { token_fbs } = conductorFound;
-      var imgPerfilUsuario;
-      var nombre;
-      var telefono;
-      if (tipo === "natural") {
-        imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-        nombre = usuario.nombrePNA;
-        telefono = usuario.nroTelefonoPNA;
-      } else if (tipo === "empresa") {
-        imgPerfilUsuario =
-          "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-        nombre = usuario.nombreEmpresa;
-        telefono = usuario.nroTelefonoPJU;
-      }
+
+      var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
+      var nombre = usuarioNatural.nombrePNA;
+      var telefono = usuarioNatural.nroTelefonoPNA;
 
       const message = {
         notification: {
@@ -129,31 +120,16 @@ export const crearPedido = async (req, res) => {
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
 
-      if (response?.failureCount > 0) {
-        console.log("Estado del envío: Error");
-        notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
-      } else {
-        console.log("Estado del envío: Éxito");
-      }
     } else if (!usuarioNatural) {
-      var tipo = "empresa";
+
       const { token_fbs } = conductorFound;
       const usuarioEmpresa = await ClienteEmpresa.findById(
         pedidoSave.id_usuario
       );
-      var imgPerfilUsuario;
-      var nombre;
-      var telefono;
-      if (tipo === "natural") {
-        imgPerfilUsuario = usuario.perfil.fotoPerfilPNA;
-        nombre = usuario.nombrePNA;
-        telefono = usuario.nroTelefonoPNA;
-      } else if (tipo === "empresa") {
-        imgPerfilUsuario =
-          "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
-        nombre = usuario.nombreEmpresa;
-        telefono = usuario.nroTelefonoPJU;
-      }
+      var nombre = usuarioEmpresa.nombreEmpresa;
+      var telefono = usuarioEmpresa.nroTelefonoPJU;
+      var  imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+  
 
       const message = {
         notification: {
@@ -190,13 +166,6 @@ export const crearPedido = async (req, res) => {
 
       const response = await admin.messaging().send(message);
       console.log("Mensaje enviado:", response);
-
-      if (response?.failureCount > 0) {
-        console.log("Estado del envío: Error");
-        notificacionPedido(token_fbs, usuario, pedidoSave, tipo);
-      } else {
-        console.log("Estado del envío: Éxito");
-      }
     }
 
     res.status(200).json({
