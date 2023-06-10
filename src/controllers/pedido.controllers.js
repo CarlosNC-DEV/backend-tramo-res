@@ -320,12 +320,12 @@ export const pedidoEnEspera = async (req, res) => {
 export const terminarPedido = async (req, res) => {
   try {
     const { id } = req.params;
-    const pedidoFound = await Pedido.findById(id).lean();
-    if (pedidoFound.estado.terminado === true) {
-      return res.status(400).json("El pedido ya a sido terminado");
-    } else if (pedidoFound.estado.atendiendo === false) {
-      return res.status(400).json("El pedido no a sido atendido");
-    }
+    // const pedidoFound = await Pedido.findById(id).lean();
+    // if (pedidoFound.estado.terminado === true) {
+    //   return res.status(400).json("El pedido ya a sido terminado");
+    // } else if (pedidoFound.estado.atendiendo === false) {
+    //   return res.status(400).json("El pedido no a sido atendido");
+    // }
 
     const pedidoTerminado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": false,
@@ -347,19 +347,37 @@ export const terminarPedido = async (req, res) => {
 export const calificacionPedido = async (req, res) => {
   try {
     const { id } = req.params;
-    const { calificacionCON, calificacionSEV } = req.body;
-    if (!calificacionCON || !calificacionSEV) {
+    const { calificacionCONServis, calificacionSEVServis } = req.body;
+    if (!calificacionCONServis || !calificacionSEVServis) {
       return res.status(400).json("Las calificaciones son requeridas");
     }
     const pedidoCalificado = await Pedido.findByIdAndUpdate(id, {
-      calificacionConductorPED: calificacionCON,
-      calificacionServicioPED: calificacionSEV,
+      calificacionConductorPED: calificacionCONServis,
+      calificacionServicioPED: calificacionSEVServis,
     });
     if (!pedidoCalificado) {
       return res
         .status(400)
-        .json("No se puedo calificar el conductor y servicio");
+        .json("No se pudo calificar el conductor y servicio");
+    } 
+
+    const conductorFound = await Conductores.findById(pedidoCalificado.id_conductor)
+
+    var newCalificacion = (parseFloat(conductorFound.calificacionCON) + parseFloat(calificacionCONServis)) / 2 
+    var newCantificacionpedido = (parseInt(conductorFound.numeroViajesCON) + 1)
+
+    const conductorCalificacionUpdate = await Conductores.findByIdAndUpdate(conductorFound._id,{
+      calificacionCON: newCalificacion,
+      numeroViajesCON: newCantificacionpedido
+    })
+
+    if(!conductorCalificacionUpdate){
+      return res
+      .status(400)
+      .json("Error al actualizar los datos de calificación");
     }
+
+  
 
     res.status(200).json("Pedido Calificado");
   } catch (error) {
