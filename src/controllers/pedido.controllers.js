@@ -714,3 +714,19 @@ export const pedidoConductores = async (req, res) => {
     return res.status(500).json(" !Error en el servidor! ");
   }
 };
+
+export const verPedidoUnique = async(req ,res)=>{
+  try {
+    const { id } = req.params;
+    const pedido = await Pedido.findById(id).lean();
+    if(!pedido){
+      return res.status(400).json("No existe un pedido con el id suministrado");
+    }
+
+    res.status(200).json(pedido)
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
