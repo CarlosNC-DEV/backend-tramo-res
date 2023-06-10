@@ -187,6 +187,10 @@ export const aceptarPedido = async (req, res) => {
       "estado.terminado": false,
     });
 
+    await Conductores.findByIdAndUpdate(pedidoAceptado.id_conductor, {
+      "estadoCON.disponibilidadCON": false
+    })
+
     if (!pedidoAceptado) {
       return res.status(400).json("! No se pudo aceptar el pedido!");
     }
