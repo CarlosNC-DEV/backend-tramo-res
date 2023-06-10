@@ -373,6 +373,7 @@ export const terminarPedido = async (req, res) => {
     }
 
     res.status(200).json("Pedido Terminado");
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
@@ -782,6 +783,59 @@ export const verPedidoUnique = async(req ,res)=>{
 
     res.status(200).json(pedido)
 
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
+
+// Utilidades
+export const notificacionLlegada = async(req, res)=>{
+  try {
+    const { id } = req.params;
+
+    const pedidosFound = await Pedido.findById(id);
+
+    if (!pedidosFound) {
+      return res.status(400).json("! No se pudo terminar el pedido!");
+    }
+
+    const usuarioNatural = await ClienteNatural.findById(
+      pedidosFound.id_usuario
+    );
+    if (usuarioNatural) {
+      const { token_fbs } = usuarioNatural;
+      const message = {
+        notification: {
+          title: "El Conductor a llegado",
+          body: " !El Conductor al llegado al punto de requecogida! ",
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+    } else if (!usuarioNatural) {
+      const usuarioEmpresa = await ClienteEmpresa.findById(
+        pedidosFound.id_usuario
+      );
+      const { token_fbs } = usuarioEmpresa;
+
+      const message = {
+        notification: {
+          title: "El Conductor a llegado",
+          body: " !El Conductor al llegado al punto de requecogida! ",
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+    }
+
+    res.status(200).json("Notificación Enviada");
   } catch (error) {
     console.log(error);
     return res.status(500).json(" !Error en el servidor! ");
