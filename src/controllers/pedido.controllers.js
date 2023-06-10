@@ -422,6 +422,37 @@ export const calificacionPedido = async (req, res) => {
   }
 };
 
+
+export const calificacionUsuarioPedido = async(req, res)=>{
+  try {
+    const { id } = req.params;
+    const { calificacionUsuario } = req.body;
+    if (!calificacionUsuario) {
+      return res.status(400).json("La calificacion del usuario es requerida");
+    }
+
+    const clienteNaturalFound = await ClienteNatural.findById(id)
+    if(clienteNaturalFound){
+      var newCalificacionNatural = (parseFloat(clienteNaturalFound.calificacionPNA) + parseFloat(calificacionUsuario)) / 2 
+      await ClienteNatural.findByIdAndUpdate(clienteNaturalFound._id,{
+        calificacionPNA: newCalificacionNatural,
+      })
+    }else if(!clienteNaturalFound){
+      const clienteEmpresaFound = await ClienteEmpresa.findById(id)
+      var newCalificacionEmpresa = (parseFloat(clienteEmpresaFound.calificacionPJU) + parseFloat(calificacionUsuario)) / 2 
+      await ClienteEmpresa.findByIdAndUpdate(clienteEmpresaFound._id,{
+        calificacionPJU: newCalificacionEmpresa,
+      })
+    }  
+
+    res.status(200).json("Usuario Calificado");
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(" !Error en el servidor! ");
+  }
+}
+
 export const verHistoriales = async (req, res) => {
   try {
     const pedidosManifestos = await Pedido.find({
