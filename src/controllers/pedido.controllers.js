@@ -337,6 +337,41 @@ export const terminarPedido = async (req, res) => {
       return res.status(400).json("! No se pudo terminar el pedido!");
     }
 
+    const usuarioNatural = await ClienteNatural.findById(
+      pedidoTerminado.id_usuario
+    );
+    if (usuarioNatural) {
+      const { token_fbs } = usuarioNatural;
+      const message = {
+        notification: {
+          title: "Pedido Finalizado",
+          body: " !Tu pedido a sido transportado correctamente a su destino! ",
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+    } else if (!usuarioNatural) {
+      const usuarioEmpresa = await ClienteEmpresa.findById(
+        pedidoTerminado.id_usuario
+      );
+      const { token_fbs } = usuarioEmpresa;
+
+      const message = {
+        notification: {
+          title: "Pedido Finalizado",
+          body: " !Tu pedido a sido transportado correctamente a su destino! ",
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+    }
+
     res.status(200).json("Pedido Terminado");
   } catch (error) {
     console.log(error);
