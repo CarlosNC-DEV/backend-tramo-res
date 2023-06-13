@@ -241,8 +241,7 @@ export const rechazarPedido = async (req, res) => {
     const pedidoRechazado = await Pedido.findByIdAndUpdate(id, {
       "estado.enEspera": true,
       "estado.atendiendo": false,
-      "estado.terminado": false,
-      id_conductor: null,
+      "estado.terminado": false
     });
 
     if (!pedidoRechazado) {
