@@ -56,7 +56,7 @@ export const verUniquePqrs = async(req , res)=>{
     try {
         const pqrsUnique = [];
         const { id } = req.params;
-        const pqrsFound = await Pqrs.findById(id).lean();
+        const pqrsFound = await Pqrs.findOne(id).lean();
     
         const usuarioNaturalFound = await ClienteNatural.findById(pqrsFound.id_usuario);
         if (usuarioNaturalFound) {

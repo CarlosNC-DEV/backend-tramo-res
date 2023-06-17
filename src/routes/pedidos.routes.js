@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validaCamposPedido } from '../middleware/validateCampos.js';
-import { crearPedido, aceptarPedido, rechazarPedido, verEstadoPedido, terminarPedido, calificacionPedido, verHistoriales, verManifiesto, dataPedido, seleccionarNuevoConductor, pedidoConductores, verPedidoUnique, notificacionLlegada, calificacionUsuarioPedido } from '../controllers/pedido.controllers.js';
+import { crearPedido, aceptarPedido, rechazarPedido, verEstadoPedido, terminarPedido, calificacionPedido, verHistoriales, verManifiesto, dataPedido, seleccionarNuevoConductor, pedidoUsuarios, verPedidoUnique, notificacionLlegada, calificacionUsuarioPedido } from '../controllers/pedido.controllers.js';
 
 import multer from 'multer';
 import { storage } from '../middleware/cloudinary.js';
@@ -23,7 +23,7 @@ router.get("/verHistoriales", verHistoriales);
 router.get("/verManifiesto/:id", verManifiesto);
 router.get("/notificacion/:id", dataPedido);
 router.put("/newPedido/:id_pedido/:id_conductor", seleccionarNuevoConductor);
-router.get("/verMisPedidos/:id", pedidoConductores)
+router.get("/verMisPedidos/:id", pedidoUsuarios)
 router.get("/verPedidoUnique/:id", verPedidoUnique)
 
 

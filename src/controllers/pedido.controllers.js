@@ -426,6 +426,9 @@ export const calificacionUsuarioPedido = async(req, res)=>{
   try {
     const { id } = req.params;
     const { calificacionUsuario } = req.body;
+
+    console.log(req.params)
+    console.log(req.body)
     if (!calificacionUsuario) {
       return res.status(400).json("La calificacion del usuario es requerida");
     }
@@ -785,15 +788,30 @@ export const seleccionarNuevoConductor = async (req, res) => {
 };
 
 
-export const pedidoConductores = async (req, res) => {
+export const pedidoUsuarios = async (req, res) => {
   try {
     const { id } = req.params;
 
+    let query = {};
+
+    const usuarioNaturalFound = await ClienteNatural.findById(id).lean();
+    const usuarioEmpresaFound = await ClienteEmpresa.findById(id).lean();
+    const conductorFound = await Conductores.findById(id).lean();
+    console.log(usuarioEmpresaFound)
+    console.log(usuarioNaturalFound)
+    console.log(conductorFound)
+
+    if (usuarioNaturalFound || usuarioEmpresaFound) {
+      query = { id_usuario: id };
+    } else {
+      query = { id_conductor: id };
+    }
+
     const pedidos = await Pedido.find({
-      id_conductor: id,
+      ...query,
       "estado.enEspera": false,
       "estado.atendiendo": false,
-      "estado.terminado": true,
+      "estado.terminado": true
     }).lean();
 
     res.status(200).json(pedidos);
