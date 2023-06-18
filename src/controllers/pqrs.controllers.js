@@ -80,3 +80,25 @@ export const verUniquePqrs = async(req , res)=>{
         return res.status(500).json("Error en el sevidor");
     }
 }
+
+
+export const responderPqrs = async(req, res)=>{
+  try {
+    const { id } = req.params;
+    const { respuesta } = req.body;
+    if(!respuesta){
+      return res.status(400).json("Es requerida una respuesta")
+    }
+
+    const pqrsFound = await Pqrs.findByIdAndUpdate(id, {
+      respuesta: respuesta
+    });
+
+    res.status(200).json("Pqrs respuesta correctamente");
+
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Error en el sevidor");
+  }
+}
