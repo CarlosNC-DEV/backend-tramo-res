@@ -892,41 +892,26 @@ export const notificacionLlegada = async(req, res)=>{
 
 export const verRemesa = async (req, res) => {
   try {
-    var cliente = {};
-    const remesa = [];
     const { id } = req.params;
+    let remesa = {};
+    
     const pedidoFound = await Pedido.findById(id);
-
-    const clienteEmpresa = await ClienteEmpresa.findById(
-      pedidoFound.id_usuario
-    );
-    if (!clienteEmpresa) {
-      const clienteNatural = await ClienteNatural.findById(
-        pedidoFound.id_usuario
-      );
-      if (clienteNatural) {
-        cliente = clienteNatural;
-      }
+    
+    const clienteNaturalFound = await ClienteNatural.findById(pedidoFound.id_usuario);
+    const conductorFound = await Conductores.findById(pedidoFound.id_conductor);
+    const vehiculoFound = await Vehiculos.findOne({ "idConductorVeh": conductorFound._id });
+    
+    if (clienteNaturalFound) {
+      remesa = { pedidoFound, cliente: clienteNaturalFound, conductorFound, vehiculoFound };
     } else {
-      cliente = clienteEmpresa;
+      const clienteEmpresaFound = await ClienteNatural.findById(pedidoFound.id_usuario);
+      remesa = { pedidoFound, cliente: clienteEmpresaFound, conductorFound, vehiculoFound };
     }
-
-    const conductor = await Conductores.findById(pedidoFound.id_conductor);
-    const vehiculo = await Vehiculos.findOne({idConductorVeh:conductor._id})
-
-    const remesaFound = {
-      pedidoFound,
-      cliente,
-      conductor,
-      vehiculo
-    };
-
-    remesa.push(remesaFound);
-
+    
     res.status(200).json(remesa);
 
   } catch (error) {
     console.log(error);
     return res.status(500).json("error en el servidor");
-  }
+  }
 };
