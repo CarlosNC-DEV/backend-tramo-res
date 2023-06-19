@@ -904,7 +904,7 @@ export const verRemesa = async (req, res) => {
     if (clienteNaturalFound) {
       remesa = { pedidoFound, cliente: clienteNaturalFound, conductorFound, vehiculoFound };
     } else {
-      const clienteEmpresaFound = await ClienteNatural.findById(pedidoFound.id_usuario);
+      const clienteEmpresaFound = await ClienteEmpresa.findById(pedidoFound.id_usuario);
       remesa = { pedidoFound, cliente: clienteEmpresaFound, conductorFound, vehiculoFound };
     }
     
