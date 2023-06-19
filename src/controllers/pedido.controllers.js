@@ -889,3 +889,44 @@ export const notificacionLlegada = async(req, res)=>{
     return res.status(500).json(" !Error en el servidor! ");
   }
 }
+
+export const verRemesa = async (req, res) => {
+  try {
+    var cliente = {};
+    const remesa = [];
+    const { id } = req.params;
+    const pedidoFound = await Pedido.findById(id);
+
+    const clienteEmpresa = await ClienteEmpresa.findById(
+      pedidoFound.id_usuario
+    );
+    if (!clienteEmpresa) {
+      const clienteNatural = await ClienteNatural.findById(
+        pedidoFound.id_usuario
+      );
+      if (clienteNatural) {
+        cliente = clienteNatural;
+      }
+    } else {
+      cliente = clienteEmpresa;
+    }
+
+    const conductor = await Conductores.findById(pedidoFound.id_conductor);
+    const vehiculo = await Vehiculos.findOne({idConductorVeh:conductor._id})
+
+    const remesaFound = {
+      pedidoFound,
+      cliente,
+      conductor,
+      vehiculo
+    };
+
+    remesa.push(remesaFound);
+
+    res.status(200).json(remesa);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("error en el servidor");
+  }
+};
