@@ -36,7 +36,7 @@ export const auchAdmin = async (req, res) => {
       return res.status(400).json("! Contraseña Incorrecta !");
     }
 
-    const token = jwt.sign({ idAdmin: existAdmin._id }, JWT_SECRET, { expiresIn: '24h'});
+    const token = jwt.sign({ idAdmin: existAdmin._id, nameAdmin:existAdmin.usuario }, JWT_SECRET, { expiresIn: '24h'});
 
     res.status(200).json({
         token: token,
