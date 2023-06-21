@@ -191,8 +191,6 @@ export const aceptarPedido = async (req, res) => {
       "estadoCON.disponibilidadCON": false
     })
 
-    res.status(200).json("pedido aceptado correctamente")
-
     if (!pedidoAceptado) {
       return res.status(400).json("! No se pudo aceptar el pedido!");
     }

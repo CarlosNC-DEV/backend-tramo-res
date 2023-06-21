@@ -257,6 +257,9 @@ export const aceptarSolicitud = async (req, res) => {
     if (!solicitudAceptar) {
       return res.status(400).json(" ! No se pudo Aceptar la solicitud! ");
     }
+
+    res.status(200).json("solicitud aceptada correctamente")
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
