@@ -9,7 +9,9 @@ export const verPqrs = async(req, res)=>{
 
         const pqrsFound = [];
 
-        const pqrs = await Pqrs.find().lean();
+        const pqrs = await Pqrs.find({
+          respuesta:null
+        }).lean();
         for (const pqrsItem of pqrs) {
           const usuarioNaturalFound = await ClienteNatural.findById(pqrsItem.id_usuario);
           if (usuarioNaturalFound) {
