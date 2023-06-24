@@ -92,12 +92,31 @@ export const responderPqrs = async(req, res)=>{
       return res.status(400).json("Es requerida una respuesta")
     }
 
-    const pqrsFound = await Pqrs.findByIdAndUpdate(id, {
+    await Pqrs.findByIdAndUpdate(id, {
       respuesta: respuesta
     });
 
     res.status(200).json("Pqrs respuesta correctamente");
 
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Error en el sevidor");
+  }
+}
+
+export const verMisPqrs = async(req, res)=>{
+  try {
+    const { id } = req.params;
+    if(!id){
+      return res.status(400).json("Se requiere el id del usuario")
+    }
+    const myPqrs = await Pqrs.find({
+      id_usuario: id,
+      respuesta: { $ne: null }
+    })
+
+    res.status(200).json(myPqrs)
 
   } catch (error) {
     console.log(error);
