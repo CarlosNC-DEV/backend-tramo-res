@@ -571,6 +571,8 @@ export const dataPedido = async (req, res) => {
       var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
       var nombre = usuarioNatural.nombrePNA;
       var telefono = usuarioNatural.nroTelefonoPNA;
+      var calificacion = usuarioNatural.calificacionPNA;
+
       const message = {
         notification: {
           title: "Nuevo pedido",
@@ -583,6 +585,7 @@ export const dataPedido = async (req, res) => {
           imgPerfil: imgPerfilUsuario.toString(),
           nombre: nombre.toString(),
           telefono: telefono.toString(),
+          calificacion: calificacion.toString(),  
           // pedido
           idPedido: pedidoFound._id.toString(),
           imgPedido: pedidoFound.imagePedido.urlImg.toString(),
@@ -590,6 +593,8 @@ export const dataPedido = async (req, res) => {
           cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
           producto: pedidoFound.carga.producto.toString(),
           cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
+          pagoCarga: pedidoFound.pagoCarga.toString(),
+          pagoDescarge: pedidoFound.pagoDescarge.toString(),
 
           latitudInicial: pedidoFound.recogida.latitud.toString(),
           longitudInicial: pedidoFound.recogida.longitud.toString(),
@@ -615,6 +620,7 @@ export const dataPedido = async (req, res) => {
       var imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
       var nombre = usuarioEmpresa.nombreEmpresa;
       var telefono = usuarioEmpresa.nroTelefonoPJU;
+      var calificacion = usuarioEmpresa.calificacionPJU;
 
       const message = {
         notification: {
@@ -628,6 +634,7 @@ export const dataPedido = async (req, res) => {
           imgPerfil: imgPerfilUsuario.toString(),
           nombre: nombre.toString(),
           telefono: telefono.toString(),
+          calificacion: calificacion.toString(),
           // pedido
           idPedido: pedidoFound._id.toString(),
           imgPedido: pedidoFound.imagePedido.urlImg.toString(),
@@ -635,6 +642,8 @@ export const dataPedido = async (req, res) => {
           cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
           producto: pedidoFound.carga.producto.toString(),
           cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
+          pagoCarga: pedidoFound.pagoCarga.toString(),
+          pagoDescarge: pedidoFound.pagoDescarge.toString(),
 
           latitudInicial: pedidoFound.recogida.latitud.toString(),
           longitudInicial: pedidoFound.recogida.longitud.toString(),
@@ -699,6 +708,8 @@ export const seleccionarNuevoConductor = async (req, res) => {
       var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
       var nombre = usuarioNatural.nombrePNA;
       var telefono = usuarioNatural.nroTelefonoPNA;
+      var calificacion = usuarioNatural.calificacionPNA;
+
       const message = {
         notification: {
           title: "Nuevo pedido",
@@ -711,6 +722,7 @@ export const seleccionarNuevoConductor = async (req, res) => {
           imgPerfil: imgPerfilUsuario.toString(),
           nombre: nombre.toString(),
           telefono: telefono.toString(),
+          calificacion: calificacion.toString(),
           // pedido
           idPedido: pedidoFound._id.toString(),
           imgPedido: pedidoFound.imagePedido.urlImg.toString(),
@@ -718,6 +730,8 @@ export const seleccionarNuevoConductor = async (req, res) => {
           cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
           producto: pedidoFound.carga.producto.toString(),
           cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
+          pagoCarga: pedidoFound.pagoCarga.toString(),
+          pagoDescarge: pedidoFound.pagoDescarge.toString(),
 
           latitudInicial: pedidoFound.recogida.latitud.toString(),
           longitudInicial: pedidoFound.recogida.longitud.toString(),
@@ -745,6 +759,7 @@ export const seleccionarNuevoConductor = async (req, res) => {
       var imgPerfilUsuario = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
       var nombre = usuarioEmpresa.nombreEmpresa;
       var telefono = usuarioEmpresa.nroTelefonoPJU;
+      var calificacion = usuarioEmpresa.calificacionPJU;
 
       const message = {
         notification: {
@@ -758,6 +773,7 @@ export const seleccionarNuevoConductor = async (req, res) => {
           imgPerfil: imgPerfilUsuario.toString(),
           nombre: nombre.toString(),
           telefono: telefono.toString(),
+          calificacion: calificacion.toString(),
           // pedido
           idPedido: pedidoFound._id.toString(),
           imgPedido: pedidoFound.imagePedido.urlImg.toString(),
@@ -765,6 +781,8 @@ export const seleccionarNuevoConductor = async (req, res) => {
           cantidadCarga: pedidoFound.carga.cantidadAproximada.toString(),
           producto: pedidoFound.carga.producto.toString(),
           cuidadoCarga: pedidoFound.carga.cuidadoCarga.toString(),
+          pagoCarga: pedidoFound.pagoCarga.toString(),
+          pagoDescarge: pedidoFound.pagoDescarge.toString(),
 
           latitudInicial: pedidoFound.recogida.latitud.toString(),
           longitudInicial: pedidoFound.recogida.longitud.toString(),
