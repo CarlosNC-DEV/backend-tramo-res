@@ -83,6 +83,7 @@ export const crearPedido = async (req, res) => {
       var imgPerfilUsuario = usuarioNatural.perfil.fotoPerfilPNA;
       var nombre = usuarioNatural.nombrePNA;
       var telefono = usuarioNatural.nroTelefonoPNA;
+      var calificacion = usuarioNatural.calificacionPNA;
 
       const message = {
         notification: {
@@ -96,6 +97,7 @@ export const crearPedido = async (req, res) => {
           imgPerfil: imgPerfilUsuario.toString(),
           nombre: nombre.toString(),
           telefono: telefono.toString(),
+          calificacion: calificacion.toString(),
           // pedido
           idPedido: pedidoSave._id.toString(),
           imgPedido: pedidoSave.imagePedido.urlImg.toString(),
@@ -129,6 +131,7 @@ export const crearPedido = async (req, res) => {
       var telefono = usuarioEmpresa.nroTelefonoPJU;
       var imgPerfilUsuario =
         "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+      var calificacion = usuarioEmpresa.calificacionPJU;
 
       const message = {
         notification: {
@@ -142,6 +145,7 @@ export const crearPedido = async (req, res) => {
           imgPerfil: imgPerfilUsuario.toString(),
           nombre: nombre.toString(),
           telefono: telefono.toString(),
+          calificacion: calificacion.toString(),
           // pedido
           idPedido: pedidoSave._id.toString(),
           imgPedido: pedidoSave.imagePedido.urlImg.toString(),
