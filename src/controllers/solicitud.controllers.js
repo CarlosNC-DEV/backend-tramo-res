@@ -10,6 +10,8 @@ export const solicitudCon = async (req, res) => {
   try {
     const requestBody = JSON.parse(req.body.body);
 
+    console.log(requestBody)
+
     //Conductor
     let idImgPerfilCon;
     let urlImgPerfilCon;
