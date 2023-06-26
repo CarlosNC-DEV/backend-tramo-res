@@ -113,13 +113,8 @@ export const solicitudCon = async (req, res) => {
     await contactoEmergenciaModel.save();
 
     const placasVehiculoFound = await Vehiculos.findOne({placaVehiculo: requestBody.placaVehiculo});
-    const placasTrailerFound = await Vehiculos.findOne({placasTrailer: requestBody.placasTrailer});
     if(placasVehiculoFound){
       res.status(400).json("Placas vehículo ya registrado y en uso en la app TRAMO")
-    }else if(placasTrailerFound){
-      if(placasTrailerFound != "N/A"){
-        res.status(400).json("Placas trailer ya registrado y en uso en la app TRAMO")
-      }
     }
 
     const vehiculoModel = new Vehiculos(requestBody);
