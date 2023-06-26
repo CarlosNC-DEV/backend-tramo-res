@@ -117,7 +117,9 @@ export const solicitudCon = async (req, res) => {
     if(placasVehiculoFound){
       res.status(400).json("Placas vehículo ya registrado y en uso en la app TRAMO")
     }else if(placasTrailerFound){
-      res.status(400).json("Placas trailer ya registrado y en uso en la app TRAMO")
+      if(placasTrailerFound != "N/A"){
+        res.status(400).json("Placas trailer ya registrado y en uso en la app TRAMO")
+      }
     }
 
     const vehiculoModel = new Vehiculos(requestBody);
