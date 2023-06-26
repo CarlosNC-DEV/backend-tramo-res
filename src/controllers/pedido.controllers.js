@@ -105,6 +105,8 @@ export const crearPedido = async (req, res) => {
           cantidadCarga: pedidoSave.carga.cantidadAproximada.toString(),
           producto: pedidoSave.carga.producto.toString(),
           cuidadoCarga: pedidoSave.carga.cuidadoCarga.toString(),
+          pagoCarga: pedidoSave.pagoCarga.toString(),
+          pagoDescarge: pedidoSave.pagoDescarge.toString(),
 
           latitudInicial: pedidoSave.recogida.latitud.toString(),
           longitudInicial: pedidoSave.recogida.longitud.toString(),
