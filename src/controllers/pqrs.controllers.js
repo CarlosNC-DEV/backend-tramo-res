@@ -2,7 +2,7 @@ import Pqrs from '../models/Pqrs.js';
 import ClienteNatural from '../models/ClienteNatural.js';
 import ClienteEmpresa from '../models/ClienteEmpresa.js';
 import Conductores from '../models/Conductores.js';
-
+import admin from "firebase-admin";
 
 export const verPqrs = async(req, res)=>{
     try {
@@ -92,9 +92,67 @@ export const responderPqrs = async(req, res)=>{
       return res.status(400).json("Es requerida una respuesta")
     }
 
-    await Pqrs.findByIdAndUpdate(id, {
+    var pqrsFoundResponse = await Pqrs.findByIdAndUpdate(id, {
       respuesta: respuesta
     });
+
+    var clienteNaturalFound = await ClienteNatural.findById(pqrsFoundResponse.id_usuario)
+    if(clienteNaturalFound){
+
+      // Notificacion a cliente Natural
+      const { token_fbs } = clienteNaturalFound;
+      const message = {
+        notification: {
+          title: "TRAMO",
+          body: `!Tu PQRS tipo ${pqrsFoundResponse.tipo} a sido respondida!`,
+        },
+        token: token_fbs,
+      };
+
+      const response = await admin.messaging().send(message);
+      console.log("Mensaje enviado:", response);
+
+    }else if(!clienteNaturalFound){
+      var clienteEmpresaFound = await ClienteNatural.findById(pqrsFoundResponse.id_usuario)
+      if(clienteEmpresaFound){
+
+        // Notificacion a cliente Empresa
+        const { token_fbs } = clienteEmpresaFound;
+        const message = {
+          notification: {
+            title: "TRAMO",
+            body: `!Tu PQRS tipo ${pqrsFoundResponse.tipo} a sido respondida!`,
+          },
+          token: token_fbs,
+        };
+  
+        const response = await admin.messaging().send(message);
+        console.log("Mensaje enviado:", response);
+
+
+      }else if(!clienteEmpresaFound){
+        var conductorFound = await Conductores.findById(pqrsFoundResponse.id_usuario)
+        if(conductorFound){
+
+          // Notificacion a conductor
+                  // Notificacion a cliente Empresa
+        const { token_fbs } = conductorFound;
+        const message = {
+          notification: {
+            title: "TRAMO",
+            body: `!Tu PQRS tipo ${pqrsFoundResponse.tipo} a sido respondida!`,
+          },
+          token: token_fbs,
+        };
+  
+        const response = await admin.messaging().send(message);
+        console.log("Mensaje enviado:", response);
+
+
+        }
+      }
+    }
+
 
     res.status(200).json("Pqrs respuesta correctamente");
 
